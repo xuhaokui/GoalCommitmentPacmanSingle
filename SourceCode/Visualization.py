@@ -1,6 +1,7 @@
 
 import pygame as pg 
 import numpy as np 
+import os 
 
 class DrawBackground():
 	def __init__(self,screen,gridSize,leaveEdgeSpace,backgroundColor,lineColor,lineWidth):
@@ -56,8 +57,22 @@ class DrawNewState():
 			pg.draw.circle(self.screen, self.playerColor, [np.int((playerPosition[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
 				np.int((playerPosition[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)],self.playerRadius)
 			pg.display.flip()
-		pg.time.wait(10)
+			pg.time.wait(10)
 		return
+
+class DrawImage():
+	def __init__(self,screen):
+		self.screen=screen
+	def __call__(self,image):
+		for drawtime in range(10):
+			for event in pg.event.get():
+				if event.type == pg.QUIT:
+					pg.quit()
+					break
+			self.screen.fill((0,0,0))
+			screen.blit(image,(0,self.screen.get_height()/4))
+			pg.display.flip()
+			pg.time.wait(10)
 
 if __name__=="__main__":
 	pg.init()
@@ -76,11 +91,15 @@ if __name__=="__main__":
 	targetPositionA=[5,5]
 	targetPositionB=[15,5]
 	playerPosition=[10,15]
+	picturePath=os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Pictures/'
+	restImage=pg.image.load(picturePath+'rest.png')
+
 
 	drawBackground=DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth)
 	drawNewState=DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
+	drawImage=DrawImage(screen)
 
-	drawNewState(targetPositionA, targetPositionB, playerPosition)
+	drawImage(restImage)
 	pg.quit()
 
 
