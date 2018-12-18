@@ -65,7 +65,7 @@ class DrawImage():
 		self.screen=screen
 	def __call__(self,image):
 		pause=True
-		for drawtime in range(10):
+		for drawtime in range(2):
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
 					pg.quit()
@@ -73,8 +73,8 @@ class DrawImage():
 			self.screen.fill((0,0,0))
 			screen.blit(image,(0,self.screen.get_height()/4))
 			pg.display.flip()
-			while pause and drawtime==9:
-				pg.time.wait(100)
+			while pause and drawtime==1:
+				pg.time.wait(10)
 				for event in pg.event.get():
 					if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
 						pause=False
