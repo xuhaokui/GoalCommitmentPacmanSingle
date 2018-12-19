@@ -156,3 +156,18 @@ class UpdateWorld():
             newTargetGrid = sampleAGridFromArea(validTargetGridX, validTargetGridY)
             self.errorIndex.append(self.index)
         return newTargetGrid
+    
+def main():
+    dimension=21
+    bounds=[0,0,dimension-1,dimension-1]
+    minDistanceBetweenGrids=5
+    condition=[-5,-3,-1,0,1,3,5]
+    counter=[0]*len(condition)
+    action=[0,1]
+    initialWorld=InitialWorld(bounds)
+    bean1Grid, bean2Grid, humanGrid=initialWorld(minDistanceBetweenGrids)
+    updateWorld=UpdateWorld(bounds,condition,counter,minDistanceBetweenGrids)
+    nextGrid=updateWorld(bean1Grid,humanGrid,action)
+
+if __name__=="__main__":
+    main()
