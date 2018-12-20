@@ -14,10 +14,17 @@ class HumanController():
 				if event.type == pg.KEYDOWN and event.key in self.actionDict.keys():
 					pause=False
 					action = self.actionDict[event.key]
-		playerNextPosition = np.add(playerPosition,action)
-		if np.any(playerNextPosition<0) or np.any(playerNextPosition>self.gridSize):
+					playerNextPosition = np.add(playerPosition,action)
+				elif event.type == pg.QUIT:
+					playerNextPosition = playerPosition.copy()
+					action=None
+					return playerNextPosition,action
+					pg.quit()
+				else:
+					playerNextPosition = playerPosition.copy()
+		if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
 			playerNextPosition = playerPosition.copy()
-		return playerNextPosition
+		return playerNextPosition,action
 
 class ModelController():
 	def __init__(self):
@@ -33,4 +40,3 @@ if __name__=="__main__":
 	getHumanAction = HumanController(gridSize)
 
 	playerNextPosition=getHumanAction(playerPosition)
-	print(playerNextPosition)
