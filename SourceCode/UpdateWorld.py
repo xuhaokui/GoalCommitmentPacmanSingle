@@ -64,14 +64,23 @@ class InitialWorld():
     def __init__(self, bounds):
         self.bounds = bounds
 
+    def generateRandomAreaOutsideTwoGrids(self,playerGrid,target1Grid,minDistanceBetweenGrids):
+        validTargetGridX1, validTargetGridY1 = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
+                                                                              minDistanceBetweenGrids, [target1Grid])
+        validTargetGridX2, validTargetGridY2 = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
+                                                                              minDistanceBetweenGrids, [target1Grid])
+        GridArea1 = list(zip(validTargetGridX1, validTargetGridY1))
+        GridArea2 = list(zip(validTargetGridX2, validTargetGridY2))
+        intersectionOfGridArea1AndGridArea2 = [str(grid) for grid in GridArea1 if grid in GridArea2]
+        target2 = eval(np.random.choice(intersectionOfGridArea1AndGridArea2, 1)[0])
+        return target2
+
     def __call__(self, minDistanceBetweenGrids):
         playerGrid = generateRandomGridInSquareArea(self.bounds)
         validTarget1GridX, validTarget1GridY = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
                                                                               minDistanceBetweenGrids, [playerGrid])
         target1Grid = sampleAGridFromArea(validTarget1GridX, validTarget1GridY)
-        validTarget2GridX, validTarget2GridY = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
-                                                                              minDistanceBetweenGrids, [target1Grid])
-        target2Grid = sampleAGridFromArea(validTarget2GridX, validTarget2GridY)
+        target2Grid=self.generateRandomAreaOutsideTwoGrids(playerGrid,target1Grid,minDistanceBetweenGrids)
         return target1Grid, target2Grid, playerGrid
 
 
@@ -156,7 +165,7 @@ class UpdateWorld():
             newTargetGrid = sampleAGridFromArea(validTargetGridX, validTargetGridY)
             self.errorIndex.append(self.index)
         return newTargetGrid
-    
+
 def main():
     dimension=21
     bounds=[0,0,dimension-1,dimension-1]
