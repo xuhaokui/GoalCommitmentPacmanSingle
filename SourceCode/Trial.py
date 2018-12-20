@@ -3,7 +3,6 @@ from Visualization import DrawBackground,DrawNewState,DrawImage
 from Controller import HumanController
 import UpdateWorld
 import pygame as pg
-import os
 import time
 import collections as co
 
@@ -16,16 +15,16 @@ class Trial():
 		self.counter=0
 
 	def checkEaten(self,bean1Grid, bean2Grid, humanGrid):
-		if np.linalg.norm(humanGrid - bean1Grid, ord=1)==0:
+		if np.linalg.norm(np.array(humanGrid) - np.array(bean1Grid), ord=1)==0:
 			eatenFlag=[True,False]
-		elif np.linalg.norm(humanGrid - bean2Grid, ord=1) == 0:
+		elif np.linalg.norm(np.array(humanGrid) - np.array(bean2Grid), ord=1) == 0:
 			eatenFlag=[False,True]
 		else:
 			eatenFlag=[False,False]
 		return eatenFlag
 
-	def checkTerminationOfTrial(self,event,eatenFlag):
-		if np.any(eatenFlag)==True :
+	def checkTerminationOfTrial(self,action,eatenFlag):
+		if np.any(eatenFlag)==True or action==pg.QUIT :
 			pause=False
 		else:
 			pause=True
