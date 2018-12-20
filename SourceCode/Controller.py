@@ -17,9 +17,8 @@ class HumanController():
 					playerNextPosition = np.add(playerPosition,action)
 				elif event.type == pg.QUIT:
 					playerNextPosition = playerPosition.copy()
-					action=None
+					action=pg.QUIT
 					return playerNextPosition,action
-					pg.quit()
 				else:
 					playerNextPosition = playerPosition.copy()
 		if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
