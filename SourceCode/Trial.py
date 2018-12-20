@@ -34,16 +34,17 @@ class Trial():
 		results=co.OrderedDict()
 		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP])
 		firstActionFlag=False
+		self.drawNewState(bean1Grid, bean2Grid, playerGrid)
 		while not firstActionFlag:
-			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
 			playerGrid, action = self.humanController(playerGrid)
+			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
 			eatenFlag = self.checkEaten(bean1Grid, bean2Grid, playerGrid)
 			if action in self.humanController.actionDict.values():
 				firstResponseTime=time.get_ticks()-initialTime
 				firstActionFlag=True
 		while pause:
-			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
 			playerGrid,action=self.humanController(playerGrid)
+			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
 			eatenFlag=self.checkEaten(bean1Grid, bean2Grid,playerGrid)
 			pause=self.checkTerminationOfTrial(action,eatenFlag)
 		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP])

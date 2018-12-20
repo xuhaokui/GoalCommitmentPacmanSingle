@@ -2,6 +2,7 @@
 import pygame as pg 
 import numpy as np 
 import os 
+import time
 
 class DrawBackground():
 	def __init__(self,screen,gridSize,leaveEdgeSpace,backgroundColor,lineColor,lineWidth):
@@ -22,13 +23,15 @@ class DrawBackground():
 			self.screen.fill((0,0,0))
 			pg.draw.rect(self.screen,self.backgroundColor,pg.Rect(np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace),
 				np.int(self.gridSize*self.widthLineStepSpace),np.int(self.gridSize*self.heightLineStepSpace)))
+			# time0=time.time()
 			for i in range(self.gridSize+1):
 				pg.draw.line(self.screen, self.lineColor, [np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace)], 
 					[np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((self.gridSize+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
 				pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], 
 					[np.int((self.gridSize+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
-			pg.display.flip()
-			pg.time.wait(10)
+			# pg.display.flip()
+			# print('draw background',time.time()-time0)
+			pg.time.wait(1)
 		return
 
 class DrawNewState():
@@ -50,6 +53,7 @@ class DrawNewState():
 					break
 			self.screen.fill((0,0,0))
 			self.drawBackground()
+			# time0=time.time()
 			pg.draw.circle(self.screen, self.targetColor, [np.int((targetPositionA[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
 				np.int((targetPositionA[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
 			pg.draw.circle(self.screen, self.targetColor, [np.int((targetPositionB[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
@@ -57,7 +61,8 @@ class DrawNewState():
 			pg.draw.circle(self.screen, self.playerColor, [np.int((playerPosition[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
 				np.int((playerPosition[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)],self.playerRadius)
 			pg.display.flip()
-			pg.time.wait(10)
+			# print('draw circles',time.time()-time0)
+			pg.time.wait(1)
 		return
 
 class DrawImage():

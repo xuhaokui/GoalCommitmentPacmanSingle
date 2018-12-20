@@ -1,6 +1,7 @@
 
 import numpy as np 
 import pygame as pg 
+import time
 
 class HumanController():
 	def __init__(self,gridSize):
@@ -9,17 +10,15 @@ class HumanController():
 	def __call__(self,playerPosition):
 		pause=True
 		while pause:
-			pg.time.wait(10)
+			# pg.time.wait(10)
 			for event in pg.event.get():
 				if event.type == pg.KEYDOWN and event.key in self.actionDict.keys():
 					pause=False
 					action = self.actionDict[event.key]
 					playerNextPosition = np.add(playerPosition,action)
 				elif event.type == pg.QUIT:
-					playerNextPosition = playerPosition.copy()
+					pause=False
 					action=pg.QUIT
-					return playerNextPosition,action
-				else:
 					playerNextPosition = playerPosition.copy()
 		if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
 			playerNextPosition = playerPosition.copy()
