@@ -76,7 +76,7 @@ class DrawImage():
 					pg.quit()
 					break
 			self.screen.fill((0,0,0))
-			screen.blit(image,(0,self.screen.get_height()/4))
+			self.screen.blit(image,(0,self.screen.get_height()/4))
 			pg.display.flip()
 			while pause and drawtime==1:
 				pg.time.wait(10)
