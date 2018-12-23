@@ -60,16 +60,15 @@ def generateRandomGridAtADistanceFromAGrid(centerGrid, squareBounds, radius, exc
     validGridY = meshGridY[equalDistanceGridIndex]
     return validGridX, validGridY
 
-
 class InitialWorld():
     def __init__(self, bounds):
         self.bounds = bounds
 
     def generateRandomAreaOutsideTwoGrids(self,playerGrid,target1Grid,minDistanceBetweenGrids):
         validTargetGridX1, validTargetGridY1 = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
-                                                                              minDistanceBetweenGrids, [target1Grid])
-        validTargetGridX2, validTargetGridY2 = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
-                                                                              minDistanceBetweenGrids, [target1Grid])
+                                                                              minDistanceBetweenGrids, [tuple(target1Grid)])
+        validTargetGridX2, validTargetGridY2 = generateRandomAreaOutsideAGrid(target1Grid, self.bounds,
+                                                                              minDistanceBetweenGrids, [tuple(playerGrid)])
         GridArea1 = list(zip(validTargetGridX1, validTargetGridY1))
         GridArea2 = list(zip(validTargetGridX2, validTargetGridY2))
         intersectionOfGridArea1AndGridArea2 = [str(grid) for grid in GridArea1 if grid in GridArea2]
@@ -79,89 +78,50 @@ class InitialWorld():
     def __call__(self, minDistanceBetweenGrids):
         playerGrid = generateRandomGridInSquareArea(self.bounds)
         validTarget1GridX, validTarget1GridY = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
-                                                                              minDistanceBetweenGrids, [playerGrid])
+                                                                              minDistanceBetweenGrids, [tuple(playerGrid)])
         target1Grid = sampleAGridFromArea(validTarget1GridX, validTarget1GridY)
         target2Grid=self.generateRandomAreaOutsideTwoGrids(playerGrid,target1Grid,minDistanceBetweenGrids)
         return target1Grid, target2Grid, playerGrid
 
 
 class UpdateWorld():
-    def __init__(self, bounds, conditon, counter, minDistanceBetweenGrids):
+    def __init__(self, bounds, conditon, counter):
         self.condition = conditon
-        self.index=0
         self.bounds = bounds
         self.counter = counter
-        self.minDistanceBetweenGrids = minDistanceBetweenGrids
-        self.errorIndex=[]
         self.correctionFactors = 0.0001
 
-    def calculateSampleConditionProbability(self, condition, counter):
-        if condition != []:
-            counterCorrection = [c + self.correctionFactors if c==0 else c for c in counter ]
-            sampleProbability = 1 / np.array(counterCorrection)
-            normalizeSampleProbability = sampleProbability / np.sum(sampleProbability)
-            sampledCondition = np.random.choice(condition, 1, p=list(normalizeSampleProbability))[0]
-        else:
-            sampledCondition=float('inf')
-        return sampledCondition
-
-
-    def generateValidNewGrid(self, playerGrid, oldTargetGrid, radius):
-        randomGridX, randomGridY = generateRandomGridAtADistanceFromAGrid(playerGrid, self.bounds, radius,
-                                                                          excludeGrids=[list(oldTargetGrid), list(playerGrid)])
-        correctedPlayerGrid=[playerGrid[0]+random.choice([self.correctionFactors,-self.correctionFactors],1),
-                             playerGrid[1] + random.choice([self.correctionFactors, -self.correctionFactors], 1)]
-        meshGridDirection = (randomGridY - correctedPlayerGrid[1]) / (randomGridX - correctedPlayerGrid[0])
-        TargetDirection = (oldTargetGrid[1] - correctedPlayerGrid[1]) / (oldTargetGrid[0] - correctedPlayerGrid[0])
-        relativeDirectionBetweenTargetAndmeshGrid = meshGridDirection * TargetDirection
-        validGridIndex = np.where(relativeDirectionBetweenTargetAndmeshGrid < 0)
-        validGridX = randomGridX[validGridIndex]
-        validGridY = randomGridY[validGridIndex]
-        return validGridX, validGridY
-
-    def calculateNextCondition(self, playerGrid, oldTargetGrid, condition, counter):
-        nextCondition = self.calculateSampleConditionProbability(condition, counter)
-        distance = np.linalg.norm(oldTargetGrid - playerGrid, ord=1) + nextCondition
-        validGridX, validGridY = self.generateValidNewGrid(playerGrid, oldTargetGrid, distance)
-        if (validGridX.size == 0 or distance==0) and nextCondition!=float('inf'):
-            invalidConditionIndex = condition.index(nextCondition)
-            condition.remove(nextCondition)
-            del counter[invalidConditionIndex]
-            return self.calculateNextCondition(playerGrid, oldTargetGrid, condition, counter)
-        else:
-            return nextCondition
-
-    def generateNextGrid(self, playerGrid, oldTargetGrid, condition, playerAction, angleBetweenActionAndOldTarget):
-        distanceBetweenOldTargetToHuman = np.linalg.norm(oldTargetGrid - playerGrid, ord=1)
-        nextDistance = distanceBetweenOldTargetToHuman + condition
-        validGridX, validGridY = self.generateValidNewGrid(playerGrid, oldTargetGrid, nextDistance)
-        vectorBetweenPlayerGridToValidGrid = list(zip(validGridX - playerGrid[0], validGridY - playerGrid[1]))
-        angle = [abs(computeAngleBetweenTwoVectors(vector, playerAction) - angleBetweenActionAndOldTarget)
-                 for vector in vectorBetweenPlayerGridToValidGrid]
-        minAngleIndex = indexCertainNumberInList(angle, min(angle))
-        gridIndex = np.random.choice(minAngleIndex, 1)
-        grid = [validGridX[gridIndex][0], validGridY[gridIndex][0]]
-        return grid
-
-    def __call__(self, oldTargetGrid, playerGrid, playerAction):
+    def __call__(self, oldTargetGrid, playerGrid):
         counter = copy.deepcopy(self.counter)
         condition = copy.deepcopy(self.condition)
-        self.index=self.index+1
-        oldTargetGrid = np.array(oldTargetGrid)
-        vectorPlayerToOldTarget = oldTargetGrid - playerGrid
-        angleBetweenActionAndOldTarget = computeAngleBetweenTwoVectors(playerAction, vectorPlayerToOldTarget)
-        nextCondition = self.calculateNextCondition(playerGrid, oldTargetGrid, condition, counter)
-        if nextCondition != float('inf'):
-            self.counter[condition.index(nextCondition)] = self.counter[condition.index(nextCondition)] + 1
-            newTargetGrid = self.generateNextGrid(playerGrid, oldTargetGrid, nextCondition, playerAction,
-                                                  angleBetweenActionAndOldTarget)
-        else:
-            validTargetGridX, validTargetGridY = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
-                                                                                self.minDistanceBetweenGrids,
-                                                                                [list(playerGrid),list(oldTargetGrid)])
-            newTargetGrid = sampleAGridFromArea(validTargetGridX, validTargetGridY)
-            self.errorIndex.append(self.index)
-        return newTargetGrid,nextCondition
+        pause=True
+        while pause:
+            counterCorrection = [c + self.correctionFactors if c == 0 else c for c in counter]
+            sampleProbability = 1 / np.array(counterCorrection)
+            normalizeSampleProbability = sampleProbability / np.sum(sampleProbability)
+            nextCondition = np.random.choice(condition, 1, p=list(normalizeSampleProbability))[0]
+            distance = np.linalg.norm(oldTargetGrid - playerGrid, ord=1) + nextCondition
+            validTarget1GridX, validTarget1GridY = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
+                                                                                  distance, [tuple(oldTargetGrid)])
+            if validTarget1GridX.size != 0 and distance!=0 :
+                self.counter[condition.index(nextCondition)] = self.counter[condition.index(nextCondition)] + 1
+                vectorPlayerGridToValidGrid = list(
+                    zip(validTarget1GridX - playerGrid[0], validTarget1GridY - playerGrid[1]))
+                vectorPlayerToOldTarget = np.array(oldTargetGrid) - np.array(playerGrid)
+                angle = [computeAngleBetweenTwoVectors(vector, vectorPlayerToOldTarget) for vector in
+                         vectorPlayerGridToValidGrid]
+                maxAngleIndex = indexCertainNumberInList(angle, max(angle))
+                gridIndex = np.random.choice(maxAngleIndex, 1)
+                newTargetGrid = [validTarget1GridX[gridIndex][0], validTarget1GridY[gridIndex][0]]
+                self.counter[condition.index(nextCondition)] = self.counter[condition.index(nextCondition)] + 1
+                pause=False
+            else:
+                invalidConditionIndex = condition.index(nextCondition)
+                condition.remove(nextCondition)
+                del counter[invalidConditionIndex]
+        return newTargetGrid, nextCondition
+
+
 
 def main():
     dimension=21
