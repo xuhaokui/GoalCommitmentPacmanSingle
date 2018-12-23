@@ -30,12 +30,12 @@ class Experiment():
 		initialTime=time.get_ticks()
 		trialIndex=0
 		while True:
-			results, bean1Grid, playerGrid, action=self.trial(bean1Grid, bean2Grid, playerGrid)
+			results, bean1Grid, playerGrid=self.trial(bean1Grid, bean2Grid, playerGrid)
 			response=self.experimentValues.copy()
 			response.update(results)
 			responseDF=pd.DataFrame(response,index=[trialIndex])
 			self.writer(responseDF)
-			bean2Grid,self.experimentValues["condition"]=self.updateWorld(bean1Grid, playerGrid, action)
+			bean2Grid,self.experimentValues["condition"]=self.updateWorld(bean1Grid, playerGrid)
 			trialIndex+=1
 			if time.get_ticks()-initialTime>=finishTime:
 				self.drawImage(self.finishImage)
@@ -51,7 +51,7 @@ def main():
 	condition = [-5, -3, -1, 0, 1, 3, 5]
 	counter = [0] * len(condition)
 	initialWorld = UpdateWorld.InitialWorld(bounds)
-	updateWorld = UpdateWorld.UpdateWorld(bounds, condition, counter, minDistanceBetweenGrids)
+	updateWorld = UpdateWorld.UpdateWorld(bounds, condition, counter)
 	pg.init()
 	screenWidth = 720
 	screenHeight = 720
