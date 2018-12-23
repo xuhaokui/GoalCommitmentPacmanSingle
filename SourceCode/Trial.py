@@ -32,6 +32,7 @@ class Trial():
 
 	def __call__(self,bean1Grid,bean2Grid,playerGrid):
 		pause=True
+		score=self.score
 		initialPlayerGrid=playerGrid
 		initialTime = time.get_ticks()
 		results=co.OrderedDict()
@@ -41,9 +42,8 @@ class Trial():
 		eatenFlag = self.checkEaten(bean1Grid, bean2Grid, playerGrid)
 		firstResponseTime = time.get_ticks() - initialTime
 		while pause:
-			# self.drawScores(self.score)
 			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
-			playerGrid,action,stopwatch=self.humanController(playerGrid)
+			playerGrid,action,stopwatch=self.humanController(playerGrid,score)
 			eatenFlag=self.checkEaten(bean1Grid, bean2Grid,playerGrid)
 			pause=self.checkTerminationOfTrial(action,eatenFlag)
 
