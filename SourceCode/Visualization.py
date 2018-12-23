@@ -1,11 +1,19 @@
 
 import pygame as pg 
 import numpy as np 
+import math
 import os 
 import time
 
+def drawText(screen,text,textColorTuple,textPositionTuple):
+	font = pg.font.Font(None,56)
+	textObj=font.render(text, 1, textColorTuple)
+	screen.blit(textObj,textPositionTuple)
+	# pg.display.flip()
+	return
+
 class DrawBackground():
-	def __init__(self,screen,gridSize,leaveEdgeSpace,backgroundColor,lineColor,lineWidth):
+	def __init__(self,screen,gridSize,leaveEdgeSpace,backgroundColor,lineColor,lineWidth,textColorTuple):
 		self.screen=screen
 		self.gridSize=gridSize
 		self.leaveEdgeSpace=leaveEdgeSpace
@@ -14,8 +22,9 @@ class DrawBackground():
 		self.backgroundColor=backgroundColor
 		self.lineColor=lineColor
 		self.lineWidth=lineWidth
-	def __call__(self):
-		for drawtime in range(1):
+		self.textColorTuple=textColorTuple
+	def __call__(self,currentTime,currentScore):
+		for drawtime in range(2):
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
 					pg.quit()
@@ -29,7 +38,11 @@ class DrawBackground():
 					[np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((self.gridSize+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
 				pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], 
 					[np.int((self.gridSize+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
-			# pg.display.flip()
+			minutes = math.floor(currentTime/1000/60)
+			seconds = math.floor(np.mod(currentTime/1000,60))
+			text = 'Time: '+str(minutes)+' min '+str(seconds)+' sec  Current score: '+str(currentScore)
+			drawText(self.screen, text, self.textColorTuple, (self.widthLineStepSpace,self.leaveEdgeSpace/0.5))
+			pg.display.flip()
 			# print('draw background',time.time()-time0)
 			pg.time.wait(1)
 		return
@@ -104,13 +117,20 @@ if __name__=="__main__":
 	playerPosition=[10,15]
 	picturePath=os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Pictures/'
 	restImage=pg.image.load(picturePath+'rest.png')
+	currentTime=138456
+	currentScore=5
+	textColorTuple=(255,50,50)
+	textPositionTuple=(50,50)
 
 
-	drawBackground=DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth)
+	drawBackground=DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState=DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
 	drawImage=DrawImage(screen)
 
-	drawImage(restImage)
+	# drawNewState(targetPositionA, targetPositionB, playerPosition)
+	# drawImage(restImage)
+	drawBackground(currentTime, currentScore)
+	pg.time.wait(5000)
 	pg.quit()
 
 
