@@ -1,17 +1,20 @@
-from Visualization import DrawBackground,DrawNewState,DrawImage
-from Controller import HumanController
-import UpdateWorld
-from Writer import WriteDataFrameToCSV
 import pygame as pg
 from pygame import time
 import os
 import pandas as pd
-from Trial import Trial
 import collections as co
+from Visualization import DrawBackground,DrawNewState,DrawImage
+from Controller import HumanController
+import UpdateWorld
+from Writer import WriteDataFrameToCSV
+from Trial import Trial
 
 class Experiment():
-	def __init__(self,trial,initialWorld,updateWorld,drawImage,resultsPath,introductionImage,restImage,finishImage,minDistanceBetweenGrids):
+	def __init__(self,trial,writer,experimentValues,initialWorld,updateWorld,drawImage,resultsPath,\
+				 introductionImage,restImage,finishImage,minDistanceBetweenGrids):
 		self.trial=trial
+		self.writer=writer
+		self.experimentValues=experimentValues
 		self.initialWorld=initialWorld
 		self.updateWorld=updateWorld
 		self.drawImage=drawImage
@@ -21,35 +24,22 @@ class Experiment():
 		self.finishImage=finishImage
 		self.minDistanceBetweenGrids=minDistanceBetweenGrids
 
-	def __call__(self,restTime,finishTime):
-		restFlag=[False]*len(restTime)
-		numberOfRests=0
-		values=co.OrderedDict()
-		values["name"] = input("Please enter your name:").capitalize()
-		values["order"] = input("Please enter your order:").capitalize()
-		values["testOrExperiment"] = input("test or experiment? ").capitalize()
-		values["condition"]='None'
-		writerPath=self.resultsPath+values["name"]+values["order"]+values["testOrExperiment"]+'.csv'
-		writer=WriteDataFrameToCSV(writerPath)
+	def __call__(self,finishTime):
 		self.drawImage(self.introductionImage)
 		bean1Grid, bean2Grid, playerGrid = self.initialWorld(self.minDistanceBetweenGrids)
 		initialTime=time.get_ticks()
 		trialIndex=0
 		while True:
 			results, bean1Grid, playerGrid, action=self.trial(bean1Grid, bean2Grid, playerGrid)
-			response=values.copy()
+			response=self.experimentValues.copy()
 			response.update(results)
 			responseDF=pd.DataFrame(response,index=[trialIndex])
-			writer(responseDF)
-			bean2Grid,values["condition"]=self.updateWorld(bean1Grid, playerGrid, action)
+			self.writer(responseDF)
+			bean2Grid,self.experimentValues["condition"]=self.updateWorld(bean1Grid, playerGrid, action)
 			trialIndex+=1
 			if time.get_ticks()-initialTime>=finishTime:
 				self.drawImage(self.finishImage)
 				break
-			elif time.get_ticks()-initialTime>=restTime[numberOfRests] and restFlag[numberOfRests]==False:
-				self.drawImage(self.restImage)
-				restFlag[numberOfRests] = True
-				numberOfRests=min(numberOfRests+1,len(restTime)-1)
 		return 0
 
 
@@ -76,13 +66,19 @@ def main():
 	targetRadius = 10
 	playerRadius = 10
 	stopwatchUnit=100
-	finishTime=1000*60*20
-	restTime=list(range(1000*60*5,1000*60*20,1000*60*5))
+	finishTime=1000*60*5
 	stopwatchEvent = pg.USEREVENT + 1
 	pg.time.set_timer(stopwatchEvent, stopwatchUnit)
 	pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, stopwatchEvent])
 	picturePath = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/Pictures/'
 	resultsPath= os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/Results/'
+	experimentValues = co.OrderedDict()
+	experimentValues["name"] = input("Please enter your name:").capitalize()
+	experimentValues["order"] = input("Please enter your order:").capitalize()
+	experimentValues["testOrExperiment"] = input("test or experiment? ").capitalize()
+	experimentValues["condition"] = 'None'
+	writerPath = resultsPath + experimentValues["name"] + experimentValues["order"] + experimentValues["testOrExperiment"] + '.csv'
+	writer = WriteDataFrameToCSV(writerPath)
 	introductionImage = pg.image.load(picturePath + 'introduction.png')
 	restImage = pg.image.load(picturePath + 'rest.png')
 	finishImage = pg.image.load(picturePath + 'finish.png')
@@ -91,8 +87,8 @@ def main():
 	drawImage = DrawImage(screen)
 	humanController = HumanController(gridSize,stopwatchEvent,stopwatchUnit)
 	trial = Trial(humanController, drawNewState,stopwatchEvent)
-	experiment=Experiment(trial,initialWorld,updateWorld,drawImage,resultsPath,introductionImage,restImage,finishImage,minDistanceBetweenGrids)
-	experiment(restTime,finishTime)
+	experiment=Experiment(trial,writer,experimentValues,initialWorld,updateWorld,drawImage,resultsPath,introductionImage,restImage,finishImage,minDistanceBetweenGrids)
+	experiment(finishTime)
 
 
 if __name__ == "__main__":
