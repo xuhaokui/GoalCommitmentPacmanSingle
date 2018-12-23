@@ -1,16 +1,18 @@
 import numpy as np
+import pygame as pg
+from pygame import time
+import collections as co
 from Visualization import DrawBackground,DrawNewState,DrawImage
 from Controller import HumanController
 import UpdateWorld
-import pygame as pg
-import collections as co
-from pygame import time
 
 
 class Trial():
-	def __init__(self,humanController,drawNewState):
+	def __init__(self,humanController,drawNewState,stopwatchEvent):
 		self.humanController=humanController
 		self.drawNewState=drawNewState
+		self.stopwatchEvent=stopwatchEvent
+		self.score=0
 
 	def checkEaten(self,bean1Grid, bean2Grid, humanGrid):
 		if np.linalg.norm(np.array(humanGrid) - np.array(bean1Grid), ord=1)==0:
@@ -30,36 +32,40 @@ class Trial():
 
 	def __call__(self,bean1Grid,bean2Grid,playerGrid):
 		pause=True
+		score=self.score
+		initialPlayerGrid=playerGrid
 		initialTime = time.get_ticks()
 		results=co.OrderedDict()
-		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP])
-		firstActionFlag=False
+		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP,pg.QUIT,self.stopwatchEvent])
 		self.drawNewState(bean1Grid, bean2Grid, playerGrid)
-		while not firstActionFlag:
-			playerGrid, action = self.humanController(playerGrid)
-			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
-			eatenFlag = self.checkEaten(bean1Grid, bean2Grid, playerGrid)
-			if action in self.humanController.actionDict.values():
-				firstResponseTime=time.get_ticks()-initialTime
-				firstActionFlag=True
+		playerGrid, action,stopwatch = self.humanController(playerGrid)
+		eatenFlag = self.checkEaten(bean1Grid, bean2Grid, playerGrid)
+		firstResponseTime = time.get_ticks() - initialTime
 		while pause:
-			playerGrid,action=self.humanController(playerGrid)
 			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
+			playerGrid,action,stopwatch=self.humanController(playerGrid,score)
 			eatenFlag=self.checkEaten(bean1Grid, bean2Grid,playerGrid)
 			pause=self.checkTerminationOfTrial(action,eatenFlag)
+
+		wholeResponseTime=time.get_ticks() - initialTime
 		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP])
-		wholeResponseTime=time.get_ticks()-initialTime
 		self.drawNewState(bean1Grid, bean2Grid, playerGrid)
 		results["bean1GridX"] = bean1Grid[0]
 		results["bean1GridY"] = bean1Grid[1]
 		results["bean2GridX"] = bean2Grid[0]
 		results["bean2GridY"] = bean2Grid[1]
-		results["playerGridX"] = playerGrid[0]
-		results["playerGridY"] = playerGrid[1]
-		if (True in eatenFlag):results["beanEaten"] = eatenFlag.index(True)+1
+		results["playerGridX"] = initialPlayerGrid[0]
+		results["playerGridY"] = initialPlayerGrid[1]
+		if True in eatenFlag:
+			results["beanEaten"] = eatenFlag.index(True)+1
+			oldGrid=eval('bean'+str(eatenFlag.index(False)+1)+'Grid')
+			self.score+=1
+		else:
+			results["beanEaten"] = 0
+			oldGrid=None
 		results["firstResponseTime"]=firstResponseTime
 		results["trialTime"]=wholeResponseTime
-		return results,action
+		return results,oldGrid,playerGrid,action
 
 
 
@@ -84,13 +90,17 @@ def main():
 	playerColor = [50, 50, 255]
 	targetRadius = 10
 	playerRadius = 10
+	stopwatchUnit=100
+	stopwatchEvent = pg.USEREVENT + 1
+	pg.time.set_timer(stopwatchEvent, stopwatchUnit)
+	pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, stopwatchEvent])
 	drawBackground = DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth)
 	drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
-	humanController=HumanController(gridSize)
-	trial=Trial(humanController,drawNewState)
+	humanController=HumanController(gridSize,stopwatchEvent,stopwatchUnit)
+	trial=Trial(humanController,drawNewState,stopwatchEvent)
 	bean1Grid,bean2Grid,playerGrid=initialWorld(minDistanceBetweenGrids)
 	results=trial(bean1Grid,bean2Grid,playerGrid)
-	print(results)
+
 
 if __name__=="__main__":
 	main()

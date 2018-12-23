@@ -1,16 +1,19 @@
-
-import numpy as np 
-import pygame as pg 
-import time
+import numpy as np
+import pygame as pg
+import Visualization
 
 class HumanController():
-	def __init__(self,gridSize):
+	def __init__(self,gridSize,stopwatchEvent,stopwatchUnit):
 		self.actionDict={pg.K_UP:[0,-1], pg.K_DOWN:[0,1], pg.K_LEFT:[-1,0], pg.K_RIGHT:[1,0]}
 		self.gridSize=gridSize
+		self.stopwatchEvent=stopwatchEvent
+		self.stopwatchUnit=stopwatchUnit
+		self.stopwatch=0
+
 	def __call__(self,playerPosition):
 		pause=True
 		while pause:
-			# pg.time.wait(10)
+			pg.time.wait(10)
 			for event in pg.event.get():
 				if event.type == pg.KEYDOWN and event.key in self.actionDict.keys():
 					pause=False
@@ -20,9 +23,13 @@ class HumanController():
 					pause=False
 					action=pg.QUIT
 					playerNextPosition = playerPosition.copy()
+				elif event.type == self.stopwatchEvent:
+					self.stopwatch=self.stopwatch+self.stopwatchUnit
+					action=None
+					playerNextPosition=playerPosition.copy()
 		if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
 			playerNextPosition = playerPosition.copy()
-		return playerNextPosition,action
+		return playerNextPosition,action,self.stopwatch
 
 class ModelController():
 	def __init__(self):
