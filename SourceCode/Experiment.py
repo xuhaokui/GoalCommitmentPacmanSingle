@@ -67,6 +67,7 @@ def main():
 	playerRadius = 10
 	stopwatchUnit=100
 	finishTime=1000*60*5
+	textColorTuple=(255,50,50)
 	stopwatchEvent = pg.USEREVENT + 1
 	pg.time.set_timer(stopwatchEvent, stopwatchUnit)
 	pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, stopwatchEvent])
@@ -79,13 +80,13 @@ def main():
 	experimentValues["condition"] = 'None'
 	writerPath = resultsPath + experimentValues["name"] + experimentValues["order"] + experimentValues["testOrExperiment"] + '.csv'
 	writer = WriteDataFrameToCSV(writerPath)
-	introductionImage = pg.image.load(picturePath + 'introduction.png')
+	introductionImage = pg.image.load(picturePath + 'rest.png')
 	restImage = pg.image.load(picturePath + 'rest.png')
-	finishImage = pg.image.load(picturePath + 'finish.png')
-	drawBackground = DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth)
+	finishImage = pg.image.load(picturePath + 'rest.png')
+	drawBackground = DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
 	drawImage = DrawImage(screen)
-	humanController = HumanController(gridSize,stopwatchEvent,stopwatchUnit)
+	humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState)
 	trial = Trial(humanController, drawNewState,stopwatchEvent)
 	experiment=Experiment(trial,writer,experimentValues,initialWorld,updateWorld,drawImage,resultsPath,introductionImage,restImage,finishImage,minDistanceBetweenGrids)
 	experiment(finishTime)

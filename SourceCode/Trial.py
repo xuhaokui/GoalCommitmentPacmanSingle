@@ -32,24 +32,21 @@ class Trial():
 
 	def __call__(self,bean1Grid,bean2Grid,playerGrid):
 		pause=True
-		score=self.score
 		initialPlayerGrid=playerGrid
 		initialTime = time.get_ticks()
 		results=co.OrderedDict()
 		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP,pg.QUIT,self.stopwatchEvent])
-		self.drawNewState(bean1Grid, bean2Grid, playerGrid)
-		playerGrid, action,stopwatch = self.humanController(playerGrid)
+		playerGrid, action, stopwatch = self.humanController(bean1Grid, bean2Grid, playerGrid, self.score)
 		eatenFlag = self.checkEaten(bean1Grid, bean2Grid, playerGrid)
 		firstResponseTime = time.get_ticks() - initialTime
 		while pause:
-			self.drawNewState(bean1Grid, bean2Grid, playerGrid)
-			playerGrid,action,stopwatch=self.humanController(playerGrid,score)
+			playerGrid,action,stopwatch =self.humanController(bean1Grid, bean2Grid, playerGrid, self.score)
 			eatenFlag=self.checkEaten(bean1Grid, bean2Grid,playerGrid)
+			self.score=np.add(self.score,np.sum(eatenFlag))
 			pause=self.checkTerminationOfTrial(action,eatenFlag)
-
+		self.drawNewState(bean1Grid, bean2Grid, playerGrid, stopwatch, self.score)
 		wholeResponseTime=time.get_ticks() - initialTime
 		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP])
-		self.drawNewState(bean1Grid, bean2Grid, playerGrid)
 		results["bean1GridX"] = bean1Grid[0]
 		results["bean1GridY"] = bean1Grid[1]
 		results["bean2GridX"] = bean2Grid[0]
@@ -90,13 +87,14 @@ def main():
 	playerColor = [50, 50, 255]
 	targetRadius = 10
 	playerRadius = 10
-	stopwatchUnit=100
+	stopwatchUnit=10
+	textColorTuple=(255,50,50)
 	stopwatchEvent = pg.USEREVENT + 1
 	pg.time.set_timer(stopwatchEvent, stopwatchUnit)
 	pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, stopwatchEvent])
-	drawBackground = DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth)
+	drawBackground = DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
-	humanController=HumanController(gridSize,stopwatchEvent,stopwatchUnit)
+	humanController=HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState)
 	trial=Trial(humanController,drawNewState,stopwatchEvent)
 	bean1Grid,bean2Grid,playerGrid=initialWorld(minDistanceBetweenGrids)
 	results=trial(bean1Grid,bean2Grid,playerGrid)

@@ -24,7 +24,7 @@ class DrawBackground():
 		self.lineWidth=lineWidth
 		self.textColorTuple=textColorTuple
 	def __call__(self,currentTime,currentScore):
-		for drawtime in range(2):
+		for drawtime in range(1):
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
 					pg.quit()
@@ -38,11 +38,12 @@ class DrawBackground():
 					[np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((self.gridSize+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
 				pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], 
 					[np.int((self.gridSize+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
+			miniseconds = currentTime - math.floor(currentTime/1000)*1000
+			seconds = math.floor(np.mod((currentTime - miniseconds)/1000,60))
 			minutes = math.floor(currentTime/1000/60)
-			seconds = math.floor(np.mod(currentTime/1000,60))
-			text = 'Time: '+str(minutes)+' min '+str(seconds)+' sec  Current score: '+str(currentScore)
+			text = 'Time: '+str(minutes)+' : '+str(seconds)+' : '+ str(miniseconds) + '  Current score: '+str(currentScore)
 			drawText(self.screen, text, self.textColorTuple, (self.widthLineStepSpace,self.leaveEdgeSpace/0.5))
-			pg.display.flip()
+			# pg.display.flip()
 			# print('draw background',time.time()-time0)
 			pg.time.wait(1)
 		return
@@ -58,14 +59,14 @@ class DrawNewState():
 		self.leaveEdgeSpace=drawBackground.leaveEdgeSpace
 		self.widthLineStepSpace=drawBackground.widthLineStepSpace
 		self.heightLineStepSpace=drawBackground.heightLineStepSpace
-	def __call__(self,targetPositionA,targetPositionB,playerPosition):
+	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentTime,currentScore):
 		for drawtime in range(1):
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
 					pg.quit()
 					break
 			self.screen.fill((0,0,0))
-			self.drawBackground()
+			self.drawBackground(currentTime,currentScore)
 			# time0=time.time()
 			pg.draw.circle(self.screen, self.targetColor, [np.int((targetPositionA[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
 				np.int((targetPositionA[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
@@ -120,14 +121,13 @@ if __name__=="__main__":
 	currentTime=138456
 	currentScore=5
 	textColorTuple=(255,50,50)
-	textPositionTuple=(50,50)
 
 
 	drawBackground=DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState=DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
 	drawImage=DrawImage(screen)
 
-	# drawNewState(targetPositionA, targetPositionB, playerPosition)
+	# drawNewState(targetPositionA, targetPositionB, playerPosition, currentTime,currentScore)
 	# drawImage(restImage)
 	drawBackground(currentTime, currentScore)
 	pg.time.wait(5000)
