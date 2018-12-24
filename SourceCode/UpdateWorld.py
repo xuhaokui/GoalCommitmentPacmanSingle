@@ -102,7 +102,7 @@ class UpdateWorld():
             nextCondition = np.random.choice(condition, 1, p=list(normalizeSampleProbability))[0]
             distance = np.linalg.norm(oldTargetGrid - playerGrid, ord=1) + nextCondition
             validTarget1GridX, validTarget1GridY = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
-                                                                                  distance, [tuple(oldTargetGrid)])
+                                                                                  distance, [tuple(oldTargetGrid),tuple(playerGrid)])
             if validTarget1GridX.size != 0 and distance!=0 :
                 self.counter[condition.index(nextCondition)] = self.counter[condition.index(nextCondition)] + 1
                 vectorPlayerGridToValidGrid = list(
