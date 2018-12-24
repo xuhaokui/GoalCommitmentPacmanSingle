@@ -12,7 +12,6 @@ class Trial():
 		self.humanController=humanController
 		self.drawNewState=drawNewState
 		self.stopwatchEvent=stopwatchEvent
-		self.score=0
 
 	def checkEaten(self,bean1Grid, bean2Grid, humanGrid):
 		if np.linalg.norm(np.array(humanGrid) - np.array(bean1Grid), ord=1)==0:
@@ -30,21 +29,21 @@ class Trial():
 			pause=True
 		return pause
 
-	def __call__(self,bean1Grid,bean2Grid,playerGrid):
+	def __call__(self,bean1Grid,bean2Grid,playerGrid,score):
 		pause=True
 		initialPlayerGrid=playerGrid
 		initialTime = time.get_ticks()
 		results=co.OrderedDict()
 		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP,pg.QUIT,self.stopwatchEvent])
-		playerGrid, action, stopwatch = self.humanController(bean1Grid, bean2Grid, playerGrid, self.score)
+		playerGrid, action, stopwatch = self.humanController(bean1Grid, bean2Grid, playerGrid, score)
 		eatenFlag = self.checkEaten(bean1Grid, bean2Grid, playerGrid)
 		firstResponseTime = time.get_ticks() - initialTime
 		while pause:
-			playerGrid,action,stopwatch =self.humanController(bean1Grid, bean2Grid, playerGrid, self.score)
+			playerGrid,action,stopwatch =self.humanController(bean1Grid, bean2Grid, playerGrid, score)
 			eatenFlag=self.checkEaten(bean1Grid, bean2Grid,playerGrid)
-			self.score=np.add(self.score,np.sum(eatenFlag))
+			score=np.add(score,np.sum(eatenFlag))
 			pause=self.checkTerminationOfTrial(action,eatenFlag)
-		self.drawNewState(bean1Grid, bean2Grid, playerGrid, stopwatch, self.score)
+		self.drawNewState(bean1Grid, bean2Grid, playerGrid, stopwatch,score)
 		wholeResponseTime=time.get_ticks() - initialTime
 		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP])
 		results["bean1GridX"] = bean1Grid[0]
@@ -56,13 +55,13 @@ class Trial():
 		if True in eatenFlag:
 			results["beanEaten"] = eatenFlag.index(True)+1
 			oldGrid=eval('bean'+str(eatenFlag.index(False)+1)+'Grid')
-			self.score+=1
+			newScore=score+1
 		else:
 			results["beanEaten"] = 0
 			oldGrid=None
 		results["firstResponseTime"]=firstResponseTime
 		results["trialTime"]=wholeResponseTime
-		return results,oldGrid,playerGrid
+		return results,oldGrid,playerGrid,newScore
 
 
 
