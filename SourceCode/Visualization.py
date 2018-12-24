@@ -1,8 +1,7 @@
-
-import pygame as pg 
-import numpy as np 
+import pygame as pg
+import numpy as np
 import math
-import os 
+import os
 import time
 
 def drawText(screen,text,textColorTuple,textPositionTuple):
@@ -34,9 +33,9 @@ class DrawBackground():
 				np.int(self.gridSize*self.widthLineStepSpace),np.int(self.gridSize*self.heightLineStepSpace)))
 			# time0=time.time()
 			for i in range(self.gridSize+1):
-				pg.draw.line(self.screen, self.lineColor, [np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace)], 
+				pg.draw.line(self.screen, self.lineColor, [np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace)],
 					[np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((self.gridSize+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
-				pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], 
+				pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)],
 					[np.int((self.gridSize+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
 			miniseconds = currentTime - math.floor(currentTime/1000)*1000
 			seconds = math.floor(np.mod((currentTime - miniseconds)/1000,60))
@@ -84,6 +83,7 @@ class DrawImage():
 		self.screen=screen
 	def __call__(self,image):
 		pause=True
+		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP,pg.QUIT])
 		for drawtime in range(2):
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
@@ -98,6 +98,8 @@ class DrawImage():
 					if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
 						pause=False
 			pg.time.wait(10)
+		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP,pg.QUIT])
+
 
 if __name__=="__main__":
 	pg.init()
@@ -132,9 +134,3 @@ if __name__=="__main__":
 	drawBackground(currentTime, currentScore)
 	pg.time.wait(5000)
 	pg.quit()
-
-
-
-
-
-
