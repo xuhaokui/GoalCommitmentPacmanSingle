@@ -2,6 +2,7 @@ import pygame as pg
 import os
 import pandas as pd
 import collections as co
+import numpy as np
 from Visualization import DrawBackground, DrawNewState, DrawImage
 from Controller import HumanController
 import UpdateWorld
@@ -88,12 +89,14 @@ def main():
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
                              minDistanceBetweenGrids)
     drawImage(introductionImage)
+    score=[0]*numberOfRests
     for i in range(numberOfRests):
         if i == numberOfRests-1:
-            score=experiment(finishTime,finishImage)
+            score[i]=experiment(finishTime,finishImage)
         else:
-            score=experiment(finishTime,restImage)
-
+            score[i]=experiment(finishTime,restImage)
+    participantsScore=np.sum(np.array(score))
+    print(participantsScore)
 
 if __name__ == "__main__":
     main()
