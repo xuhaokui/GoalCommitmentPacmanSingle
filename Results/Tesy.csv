@@ -1,6 +1,0 @@
-,name,condition,bean1GridX,bean1GridY,bean2GridX,bean2GridY,playerGridX,playerGridY,beanEaten,firstResponseTime,trialTime
-0,Tesy,None,9,9,10,13,2,6,1,222,4959
-1,Tesy,3,10,13,7,1,9,9,1,68,1112
-2,Tesy,-1,7,1,0,9,10,13,2,15,3134
-3,Tesy,-3,7,1,8,13,0,9,1,52,3617
-4,Tesy,5,8,13,0,12,7,1,0,37,6540
