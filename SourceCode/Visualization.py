@@ -23,7 +23,6 @@ class GiveExperimentFeedback():
 		pg.display.flip()
 		pg.time.wait(3000)
 
-
 class DrawBackground():
 	def __init__(self,screen,gridSize,leaveEdgeSpace,backgroundColor,lineColor,lineWidth,textColorTuple):
 		self.screen=screen
@@ -117,12 +116,10 @@ if __name__=="__main__":
 	currentTime=138456
 	currentScore=5
 	textColorTuple=(255,50,50)
-
-
 	drawBackground=DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState=DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
 	drawImage=DrawImage(screen)
-
 	drawBackground(currentTime, currentScore)
 	pg.time.wait(5000)
 	pg.quit()
+

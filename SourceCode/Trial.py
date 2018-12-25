@@ -44,7 +44,7 @@ class Trial():
 			eatenFlag=self.checkEaten(bean1Grid, bean2Grid,playerGrid)
 			score=np.add(score,np.sum(eatenFlag))
 			pause=self.checkTerminationOfTrial(action,eatenFlag,currentStopwatch)
-		self.drawNewState(bean1Grid, bean2Grid, playerGrid, 0,score)
+		self.drawNewState(bean1Grid, bean2Grid, playerGrid, currentStopwatch,score)
 		wholeResponseTime=time.get_ticks() - initialTime
 		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP])
 		results["bean1GridX"] = bean1Grid[0]

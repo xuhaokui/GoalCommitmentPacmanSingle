@@ -97,6 +97,7 @@ def main():
             drawImage(finishImage)
         else:
             drawImage(restImage)
+
     participantsScore=np.sum(np.array(score))
     print(participantsScore)
 

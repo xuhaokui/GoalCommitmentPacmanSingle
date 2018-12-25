@@ -13,10 +13,10 @@ class HumanController():
 		self.finishTime=finishTime
 
 	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentScore,currentStopwatch):
+		pause=True
 		playerNextPosition=playerPosition.copy()
 		remainningTime=max(0,self.finishTime-currentStopwatch)
 		self.drawNewState(targetPositionA,targetPositionB,playerPosition,remainningTime,currentScore)
-		pause=True
 		while pause:
 			for event in pg.event.get():
 				if event.type == pg.KEYDOWN and event.key in self.actionDict.keys() and \
