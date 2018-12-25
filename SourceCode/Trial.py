@@ -8,10 +8,11 @@ import UpdateWorld
 
 
 class Trial():
-	def __init__(self,humanController,drawNewState,stopwatchEvent):
+	def __init__(self,humanController,drawNewState,stopwatchEvent,finishTime):
 		self.humanController=humanController
 		self.drawNewState=drawNewState
 		self.stopwatchEvent=stopwatchEvent
+		self.finishTime=finishTime
 
 	def checkEaten(self,bean1Grid, bean2Grid, humanGrid):
 		if np.linalg.norm(np.array(humanGrid) - np.array(bean1Grid), ord=1)==0:
@@ -22,28 +23,28 @@ class Trial():
 			eatenFlag=[False,False]
 		return eatenFlag
 
-	def checkTerminationOfTrial(self,action,eatenFlag):
-		if np.any(eatenFlag)==True or action==pg.QUIT :
+	def checkTerminationOfTrial(self,action,eatenFlag,currentStopwatch):
+		if np.any(eatenFlag)==True or action==pg.QUIT or currentStopwatch>=self.finishTime:
 			pause=False
 		else:
 			pause=True
 		return pause
 
-	def __call__(self,bean1Grid,bean2Grid,playerGrid,score):
+	def __call__(self,bean1Grid,bean2Grid,playerGrid,score,currentStopwatch):
 		pause=True
 		initialPlayerGrid=playerGrid
 		initialTime = time.get_ticks()
 		results=co.OrderedDict()
 		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP,pg.QUIT,self.stopwatchEvent])
-		playerGrid, action, stopwatch = self.humanController(bean1Grid, bean2Grid, playerGrid, score)
+		playerGrid, action, currentStopwatch = self.humanController(bean1Grid, bean2Grid, playerGrid, score,currentStopwatch)
 		eatenFlag = self.checkEaten(bean1Grid, bean2Grid, playerGrid)
 		firstResponseTime = time.get_ticks() - initialTime
 		while pause:
-			playerGrid,action,stopwatch =self.humanController(bean1Grid, bean2Grid, playerGrid, score)
+			playerGrid,action,currentStopwatch =self.humanController(bean1Grid, bean2Grid, playerGrid, score,currentStopwatch)
 			eatenFlag=self.checkEaten(bean1Grid, bean2Grid,playerGrid)
 			score=np.add(score,np.sum(eatenFlag))
-			pause=self.checkTerminationOfTrial(action,eatenFlag)
-		self.drawNewState(bean1Grid, bean2Grid, playerGrid, stopwatch,score)
+			pause=self.checkTerminationOfTrial(action,eatenFlag,currentStopwatch)
+		self.drawNewState(bean1Grid, bean2Grid, playerGrid, currentStopwatch,score)
 		wholeResponseTime=time.get_ticks() - initialTime
 		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP])
 		results["bean1GridX"] = bean1Grid[0]
@@ -59,9 +60,10 @@ class Trial():
 		else:
 			results["beanEaten"] = 0
 			oldGrid=None
+			newScore = score
 		results["firstResponseTime"]=firstResponseTime
 		results["trialTime"]=wholeResponseTime
-		return results,oldGrid,playerGrid,newScore
+		return results,oldGrid,playerGrid,newScore,currentStopwatch
 
 
 
