@@ -30,6 +30,7 @@ class HumanController():
 					currentStopwatch=currentStopwatch+self.stopwatchUnit
 		# if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
 		# 	playerNextPosition = playerPosition.copy()
+			pg.display.flip()
 		return playerNextPosition,action,currentStopwatch
 
 class ModelController():

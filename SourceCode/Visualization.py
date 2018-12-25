@@ -43,7 +43,7 @@ class DrawBackground():
 		drawText(self.screen, text, self.textColorTuple, (self.widthLineStepSpace,self.leaveEdgeSpace/0.5))
 		# pg.display.flip()
 		# print('draw background',time.time()-time0)
-		pg.time.wait(1)
+		# pg.time.wait(1)
 		return
 
 class DrawNewState():
@@ -72,9 +72,9 @@ class DrawNewState():
 			np.int((targetPositionB[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
 		pg.draw.circle(self.screen, self.playerColor, [np.int((playerPosition[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
 			np.int((playerPosition[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)],self.playerRadius)
-		pg.display.flip()
+		# pg.display.flip()
 		# print('draw circles',time.time()-time0)
-		pg.time.wait(1)
+		# pg.time.wait(1)
 		return
 
 class DrawImage():

@@ -62,7 +62,7 @@ def main():
     targetRadius = 10
     playerRadius = 10
     stopwatchUnit = 1000
-    finishTime=1000*90
+    finishTime=1000*30
     numberOfRests=4
     textColorTuple = (255, 50, 50)
     stopwatchEvent = pg.USEREVENT + 1
