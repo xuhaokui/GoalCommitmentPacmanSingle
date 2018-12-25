@@ -1,5 +1,4 @@
 import pygame as pg
-from pygame import time
 import os
 import pandas as pd
 import collections as co
@@ -12,7 +11,7 @@ from Trial import Trial
 
 class Experiment():
     def __init__(self, trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath, \
-                 introductionImage,  minDistanceBetweenGrids):
+                 minDistanceBetweenGrids):
         self.trial = trial
         self.writer = writer
         self.experimentValues = experimentValues
@@ -20,31 +19,30 @@ class Experiment():
         self.updateWorld = updateWorld
         self.drawImage = drawImage
         self.resultsPath = resultsPath
-        self.introductionImage = introductionImage
         self.minDistanceBetweenGrids = minDistanceBetweenGrids
 
     def __call__(self, finishTime,image):
-        self.drawImage(self.introductionImage)
         bean1Grid, bean2Grid, playerGrid = self.initialWorld(self.minDistanceBetweenGrids)
-        initialTime = time.get_ticks()
         trialIndex = 0
         score=0
+        currentStopwatch=0
         while True:
-            results, bean1Grid, playerGrid,score = self.trial(bean1Grid, bean2Grid, playerGrid,score)
+            results, bean1Grid, playerGrid,score,currentStopwatch = self.trial(bean1Grid, bean2Grid, playerGrid,score,currentStopwatch)
             response = self.experimentValues.copy()
             response.update(results)
             responseDF = pd.DataFrame(response, index=[trialIndex])
             self.writer(responseDF)
-            bean2Grid, self.experimentValues["condition"] = self.updateWorld(bean1Grid, playerGrid)
-            trialIndex += 1
-            if time.get_ticks() - initialTime >= finishTime:
+            if currentStopwatch >= finishTime:
                 self.drawImage(image)
                 break
+            bean2Grid, self.experimentValues["condition"] = self.updateWorld(bean1Grid, playerGrid)
+            trialIndex += 1
+        return score
 
 
 def main():
-    dimension = 21
-    bounds = [0, 0, dimension - 1, dimension - 1]
+    gridSize = 11
+    bounds = [0, 0, gridSize - 1, gridSize - 1]
     minDistanceBetweenGrids = 5
     condition = [-5, -3, -1, 0, 1, 3, 5]
     counter = [0] * len(condition)
@@ -54,7 +52,6 @@ def main():
     screenWidth = 720
     screenHeight = 720
     screen = pg.display.set_mode((screenWidth, screenHeight))
-    gridSize = 21
     leaveEdgeSpace = 2
     lineWidth = 1
     backgroundColor = [205, 255, 204]
@@ -63,8 +60,8 @@ def main():
     playerColor = [50, 50, 255]
     targetRadius = 10
     playerRadius = 10
-    stopwatchUnit = 100
-    finishTime = 1000 * 90
+    stopwatchUnit = 1000
+    finishTime=1000*90
     numberOfRests=4
     textColorTuple = (255, 50, 50)
     stopwatchEvent = pg.USEREVENT + 1
@@ -74,28 +71,28 @@ def main():
     resultsPath = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/Results/'
     experimentValues = co.OrderedDict()
     experimentValues["name"] = input("Please enter your name:").capitalize()
-    experimentValues["order"] = input("Please enter your order:").capitalize()
-    experimentValues["testOrExperiment"] = input("test or experiment? ").capitalize()
     experimentValues["condition"] = 'None'
-    writerPath = resultsPath + experimentValues["name"] + experimentValues["order"] + experimentValues[
-        "testOrExperiment"] + '.csv'
+    writerPath = resultsPath + experimentValues["name"] + '.csv'
     writer = WriteDataFrameToCSV(writerPath)
-    introductionImage = pg.image.load(picturePath + 'rest.png')
+    introductionImage = pg.image.load(picturePath + 'introduction.png')
     restImage = pg.image.load(picturePath + 'rest.png')
-    finishImage = pg.image.load(picturePath + 'rest.png')
+    finishImage = pg.image.load(picturePath + 'finish.png')
+    introductionImage=pg.transform.scale(introductionImage, (screenWidth,screenHeight))
+    finishImage=pg.transform.scale(finishImage, (int(screenWidth*2/3),int(screenHeight/4)))
     drawBackground = DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth,
                                     textColorTuple)
     drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
     drawImage = DrawImage(screen)
     humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState)
-    trial = Trial(humanController, drawNewState, stopwatchEvent)
+    trial = Trial(humanController, drawNewState, stopwatchEvent,finishTime)
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
-                            introductionImage, minDistanceBetweenGrids)
+                             minDistanceBetweenGrids)
+    drawImage(introductionImage)
     for i in range(numberOfRests):
         if i == numberOfRests-1:
-            experiment(finishTime,finishImage)
+            score=experiment(finishTime,finishImage)
         else:
-            experiment(finishTime,restImage)
+            score=experiment(finishTime,restImage)
 
 
 if __name__ == "__main__":
