@@ -10,27 +10,27 @@ class HumanController():
 		self.stopwatchUnit=stopwatchUnit
 		self.stopwatch=0
 		self.drawNewState=drawNewState
-	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentScore):
+	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentScore,currentStopwatch):
 		pause=True
 		playerNextPosition=playerPosition.copy()
 		while pause:
 			# pg.time.wait(10)
-			self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,self.stopwatch,currentScore)
+			self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,currentStopwatch,currentScore)
 			for event in pg.event.get():
 				if event.type == pg.KEYDOWN and event.key in self.actionDict.keys() and np.all(np.add(playerPosition,self.actionDict[event.key])>=0) and np.all(np.add(playerPosition,self.actionDict[event.key])<self.gridSize):
 					pause=False
 					action = self.actionDict[event.key]
 					playerNextPosition = np.add(playerPosition,action)
-					self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,self.stopwatch,currentScore)
+					self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,currentStopwatch,currentScore)
 				elif event.type == pg.QUIT:
 					pause=False
 					action=pg.QUIT
 					playerNextPosition = playerPosition.copy()
 				if event.type == self.stopwatchEvent:
-					self.stopwatch=self.stopwatch+self.stopwatchUnit
+					currentStopwatch=currentStopwatch+self.stopwatchUnit
 		# if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
 		# 	playerNextPosition = playerPosition.copy()
-		return playerNextPosition,action,self.stopwatch
+		return playerNextPosition,action,currentStopwatch
 
 class ModelController():
 	def __init__(self):
