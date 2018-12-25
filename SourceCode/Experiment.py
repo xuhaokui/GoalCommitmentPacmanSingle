@@ -42,7 +42,7 @@ class Experiment():
 
 
 def main():
-    gridSize = 11
+    gridSize = 15
     bounds = [0, 0, gridSize - 1, gridSize - 1]
     minDistanceBetweenGrids = 5
     condition = [-5, -3, -1, 0, 1, 3, 5]
