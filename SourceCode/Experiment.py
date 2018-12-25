@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import collections as co
 import numpy as np
-from Visualization import DrawBackground, DrawNewState, DrawImage
+from Visualization import DrawBackground, DrawNewState, DrawImage,GiveExperimentFeedback
 from Controller import HumanController
 import UpdateWorld
 from Writer import WriteDataFrameToCSV
@@ -22,7 +22,7 @@ class Experiment():
         self.resultsPath = resultsPath
         self.minDistanceBetweenGrids = minDistanceBetweenGrids
 
-    def __call__(self, finishTime,image):
+    def __call__(self, finishTime):
         bean1Grid, bean2Grid, playerGrid = self.initialWorld(self.minDistanceBetweenGrids)
         trialIndex = 0
         score=0
@@ -34,7 +34,6 @@ class Experiment():
             responseDF = pd.DataFrame(response, index=[trialIndex])
             self.writer(responseDF)
             if currentStopwatch >= finishTime:
-                self.drawImage(image)
                 break
             bean2Grid, self.experimentValues["condition"] = self.updateWorld(bean1Grid, playerGrid)
             trialIndex += 1
@@ -61,8 +60,8 @@ def main():
     playerColor = [50, 50, 255]
     targetRadius = 10
     playerRadius = 10
-    stopwatchUnit = 1000
-    finishTime=1000*30
+    stopwatchUnit = 100
+    finishTime=1000*90
     numberOfRests=4
     textColorTuple = (255, 50, 50)
     stopwatchEvent = pg.USEREVENT + 1
@@ -84,17 +83,20 @@ def main():
                                     textColorTuple)
     drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
     drawImage = DrawImage(screen)
-    humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState)
+    humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState,finishTime)
     trial = Trial(humanController, drawNewState, stopwatchEvent,finishTime)
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
                              minDistanceBetweenGrids)
+    giveExperimentFeedback=GiveExperimentFeedback(screen,textColorTuple,screenWidth,screenHeight)
     drawImage(introductionImage)
     score=[0]*numberOfRests
     for i in range(numberOfRests):
+        score[i] = experiment(finishTime)
+        giveExperimentFeedback(i,score)
         if i == numberOfRests-1:
-            score[i]=experiment(finishTime,finishImage)
+            drawImage(finishImage)
         else:
-            score[i]=experiment(finishTime,restImage)
+            drawImage(restImage)
     participantsScore=np.sum(np.array(score))
     print(participantsScore)
 
