@@ -2,7 +2,6 @@ import pygame as pg
 import numpy as np
 import math
 import os
-import time
 
 def drawText(screen,text,textColorTuple,textPositionTuple):
 	font = pg.font.Font(None,56)
@@ -23,28 +22,28 @@ class DrawBackground():
 		self.lineWidth=lineWidth
 		self.textColorTuple=textColorTuple
 	def __call__(self,currentTime,currentScore):
-		for drawtime in range(1):
-			for event in pg.event.get():
-				if event.type == pg.QUIT:
-					pg.quit()
-					break
-			self.screen.fill((0,0,0))
-			pg.draw.rect(self.screen,self.backgroundColor,pg.Rect(np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace),
-				np.int(self.gridSize*self.widthLineStepSpace),np.int(self.gridSize*self.heightLineStepSpace)))
-			# time0=time.time()
-			for i in range(self.gridSize+1):
-				pg.draw.line(self.screen, self.lineColor, [np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace)],
-					[np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((self.gridSize+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
-				pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)],
-					[np.int((self.gridSize+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
-			miniseconds = currentTime - math.floor(currentTime/1000)*1000
-			seconds = math.floor(np.mod((currentTime - miniseconds)/1000,60))
-			minutes = math.floor(currentTime/1000/60)
-			text = 'Time: '+str(minutes)+' : '+str(seconds)+' : '+ str(miniseconds) + '  Current score: '+str(currentScore)
-			drawText(self.screen, text, self.textColorTuple, (self.widthLineStepSpace,self.leaveEdgeSpace/0.5))
-			# pg.display.flip()
-			# print('draw background',time.time()-time0)
-			pg.time.wait(1)
+		# for drawtime in range(1):
+		# 	for event in pg.event.get():
+		# 		if event.type == pg.QUIT:
+		# 			pg.quit()
+		# 			break
+		self.screen.fill((0,0,0))
+		pg.draw.rect(self.screen,self.backgroundColor,pg.Rect(np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace),
+			np.int(self.gridSize*self.widthLineStepSpace),np.int(self.gridSize*self.heightLineStepSpace)))
+		# time0=time.time()
+		for i in range(self.gridSize+1):
+			pg.draw.line(self.screen, self.lineColor, [np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int(self.leaveEdgeSpace*self.heightLineStepSpace)],
+				[np.int((i+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((self.gridSize+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
+			pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)],
+				[np.int((self.gridSize+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
+		miniseconds = currentTime - math.floor(currentTime/1000)*1000
+		seconds = math.floor(np.mod((currentTime - miniseconds)/1000,60))
+		minutes = math.floor(currentTime/1000/60)
+		text = 'Time: '+str(minutes)+' : '+str(seconds)+' : '+ str(miniseconds) + '  Current score: '+str(currentScore)
+		drawText(self.screen, text, self.textColorTuple, (self.widthLineStepSpace,self.leaveEdgeSpace/0.5))
+		# pg.display.flip()
+		# print('draw background',time.time()-time0)
+		pg.time.wait(1)
 		return
 
 class DrawNewState():
@@ -59,44 +58,45 @@ class DrawNewState():
 		self.widthLineStepSpace=drawBackground.widthLineStepSpace
 		self.heightLineStepSpace=drawBackground.heightLineStepSpace
 	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentTime,currentScore):
-		for drawtime in range(1):
-			for event in pg.event.get():
-				if event.type == pg.QUIT:
-					pg.quit()
-					break
-			self.screen.fill((0,0,0))
-			self.drawBackground(currentTime,currentScore)
-			# time0=time.time()
-			pg.draw.circle(self.screen, self.targetColor, [np.int((targetPositionA[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
-				np.int((targetPositionA[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
-			pg.draw.circle(self.screen, self.targetColor, [np.int((targetPositionB[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
-				np.int((targetPositionB[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
-			pg.draw.circle(self.screen, self.playerColor, [np.int((playerPosition[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
-				np.int((playerPosition[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)],self.playerRadius)
-			pg.display.flip()
-			# print('draw circles',time.time()-time0)
-			pg.time.wait(1)
+		# for drawtime in range(1):
+		# 	for event in pg.event.get():
+		# 		if event.type == pg.QUIT:
+		# 			pg.quit()
+		# 			break
+		# self.screen.fill((0,0,0))
+		self.drawBackground(currentTime,currentScore)
+		# time0=time.time()
+		pg.draw.circle(self.screen, self.targetColor, [np.int((targetPositionA[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
+			np.int((targetPositionA[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
+		pg.draw.circle(self.screen, self.targetColor, [np.int((targetPositionB[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
+			np.int((targetPositionB[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
+		pg.draw.circle(self.screen, self.playerColor, [np.int((playerPosition[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
+			np.int((playerPosition[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)],self.playerRadius)
+		pg.display.flip()
+		# print('draw circles',time.time()-time0)
+		pg.time.wait(1)
 		return
 
 class DrawImage():
 	def __init__(self,screen):
 		self.screen=screen
+		self.screenCenter=(self.screen.get_width()/2,self.screen.get_height()/2)
+
 	def __call__(self,image):
+		imageRect=image.get_rect()
+		imageRect.center=self.screenCenter
 		pause=True
 		pg.event.set_allowed([pg.KEYDOWN, pg.KEYUP,pg.QUIT])
-		for drawtime in range(2):
+		self.screen.fill((0, 0, 0))
+		self.screen.blit(image, imageRect)
+		pg.display.flip()
+		while pause:
+			pg.time.wait(10)
 			for event in pg.event.get():
-				if event.type == pg.QUIT:
+				if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+					pause = False
+				elif event.type == pg.QUIT:
 					pg.quit()
-					break
-			self.screen.fill((0,0,0))
-			self.screen.blit(image,(0,self.screen.get_height()/4))
-			pg.display.flip()
-			while pause and drawtime==1:
-				pg.time.wait(10)
-				for event in pg.event.get():
-					if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-						pause=False
 			pg.time.wait(10)
 		pg.event.set_blocked([pg.KEYDOWN, pg.KEYUP,pg.QUIT])
 
