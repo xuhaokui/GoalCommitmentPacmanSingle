@@ -3,8 +3,9 @@ import os
 import pandas as pd
 import collections as co
 import numpy as np
+import pickle
 from Visualization import DrawBackground, DrawNewState, DrawImage,GiveExperimentFeedback
-from Controller import HumanController
+from Controller import HumanController,ModelController
 import UpdateWorld
 from Writer import WriteDataFrameToCSV
 from Trial import Trial
@@ -84,7 +85,9 @@ def main():
     drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
     drawImage = DrawImage(screen)
     humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState,finishTime)
-    trial = Trial(humanController, drawNewState, stopwatchEvent,finishTime)
+    policy = pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
+    modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+    trial = Trial(modelController, drawNewState, stopwatchEvent,finishTime)
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
                              minDistanceBetweenGrids)
     giveExperimentFeedback=GiveExperimentFeedback(screen,textColorTuple,screenWidth,screenHeight)

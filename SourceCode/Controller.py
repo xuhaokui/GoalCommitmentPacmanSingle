@@ -1,5 +1,6 @@
 import numpy as np
 import pygame as pg
+import random
 import Visualization
 
 class HumanController():
@@ -54,10 +55,35 @@ class HumanController():
 		return playerNextPosition,action,newStopwatch
 
 class ModelController():
-	def __init__(self):
-		pass
-	def __call__(self):
-		return
+	def __init__(self,policy,gridSize,stopwatchEvent,stopwatchUnit,drawNewState,finishTime):
+		self.policy=policy
+		self.gridSize=gridSize
+		self.stopwatchEvent=stopwatchEvent
+		self.stopwatchUnit=stopwatchUnit
+		self.stopwatch=0
+		self.drawNewState=drawNewState
+		self.finishTime=finishTime
+	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentScore,currentStopwatch):
+		pause=True
+		newStopwatch = currentStopwatch
+		remainningTime=max(0,self.finishTime-currentStopwatch)
+		self.drawNewState(targetPositionA,targetPositionB,playerPosition,remainningTime,currentScore)
+		while pause:
+			targetStates = (tuple(targetPositionA),tuple(targetPositionB))
+			if targetStates not in self.policy.keys():
+				targetStates = (tuple(targetPositionB),tuple(targetPositionA))
+			policyForCurrentStateDict=self.policy[targetStates][tuple(playerPosition)]
+			actionMaxList = [action for action in policyForCurrentStateDict.keys() if policyForCurrentStateDict[action]==np.max(list(policyForCurrentStateDict.values()))]
+			action = random.choice(actionMaxList)
+			playerNextPosition=np.add(playerPosition,action)
+			pause=False
+			for event in pg.event.get():
+				if event.type == self.stopwatchEvent:
+					newStopwatch=newStopwatch+self.stopwatchUnit
+					remainningTime=max(0,self.finishTime - newStopwatch)
+			self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,remainningTime,currentScore)
+			pg.display.flip()
+		return playerNextPosition,action,newStopwatch
 
 if __name__=="__main__":
 	pg.init()
@@ -81,11 +107,19 @@ if __name__=="__main__":
 	stopwatchEvent = pg.USEREVENT + 1
 	stopwatchUnit=10
 	pg.time.set_timer(stopwatchEvent, stopwatchUnit)
+	finishTime=90000
+	currentStopwatch=32000
 
 	drawBackground=Visualization.DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState=Visualization.DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
 
-	getHumanAction = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState)
+	getHumanAction = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+	import pickle
+	policy=pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
+	getModelAction = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
 
-	[playerNextPosition,action,stopwatch]=getHumanAction(targetPositionA, targetPositionB, playerPosition, currentScore)
-	print(playerNextPosition,action,stopwatch)
+	# [playerNextPosition,action,newStopwatch]=getHumanAction(targetPositionA, targetPositionB, playerPosition, currentScore, currentStopwatch)
+	[playerNextPosition,action,newStopwatch]=getModelAction(targetPositionA, targetPositionB, playerPosition, currentScore, currentStopwatch)
+	print(playerNextPosition,action,newStopwatch)
+
+	pg.quit()

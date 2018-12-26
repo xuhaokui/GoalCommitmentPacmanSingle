@@ -56,14 +56,12 @@ class Trial():
 		if True in eatenFlag:
 			results["beanEaten"] = eatenFlag.index(True)+1
 			oldGrid=eval('bean'+str(eatenFlag.index(False)+1)+'Grid')
-			newScore=score+1
 		else:
 			results["beanEaten"] = 0
 			oldGrid=None
-			newScore = score
 		results["firstResponseTime"]=firstResponseTime
 		results["trialTime"]=wholeResponseTime
-		return results,oldGrid,playerGrid,newScore,currentStopwatch
+		return results,oldGrid,playerGrid,Score,currentStopwatch
 
 
 
