@@ -3,35 +3,51 @@ import pygame as pg
 import Visualization
 
 class HumanController():
-	def __init__(self,gridSize,stopwatchEvent,stopwatchUnit,drawNewState):
+	def __init__(self,gridSize,stopwatchEvent,stopwatchUnit,drawNewState,finishTime):
 		self.actionDict={pg.K_UP:[0,-1], pg.K_DOWN:[0,1], pg.K_LEFT:[-1,0], pg.K_RIGHT:[1,0]}
 		self.gridSize=gridSize
 		self.stopwatchEvent=stopwatchEvent
 		self.stopwatchUnit=stopwatchUnit
 		self.stopwatch=0
 		self.drawNewState=drawNewState
+		self.finishTime=finishTime
+
 	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentScore,currentStopwatch):
 		pause=True
 		playerNextPosition=playerPosition.copy()
+		remainningTime=max(0,self.finishTime-currentStopwatch)
+		self.drawNewState(targetPositionA,targetPositionB,playerPosition,remainningTime,currentScore)
 		while pause:
-			# pg.time.wait(10)
-			self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,currentStopwatch,currentScore)
 			for event in pg.event.get():
-				if event.type == pg.KEYDOWN and event.key in self.actionDict.keys() and np.all(np.add(playerPosition,self.actionDict[event.key])>=0) and np.all(np.add(playerPosition,self.actionDict[event.key])<self.gridSize):
-					pause=False
+				if event.type == pg.KEYDOWN and event.key in self.actionDict.keys() and \
+						np.all(np.add(playerPosition,self.actionDict[event.key])>=0) and \
+						np.all(np.add(playerPosition,self.actionDict[event.key])<self.gridSize)\
+						and event.type!=self.stopwatchEvent:
 					action = self.actionDict[event.key]
 					playerNextPosition = np.add(playerPosition,action)
-					self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,currentStopwatch,currentScore)
-				elif event.type == pg.QUIT:
+					newStopwatch = currentStopwatch
 					pause=False
+				elif event.type == pg.QUIT:
 					action=pg.QUIT
 					playerNextPosition = playerPosition.copy()
-				if event.type == self.stopwatchEvent:
-					currentStopwatch=currentStopwatch+self.stopwatchUnit
-		# if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
-		# 	playerNextPosition = playerPosition.copy()
-			pg.display.flip()
-		return playerNextPosition,action,currentStopwatch
+					newStopwatch = currentStopwatch
+					pause=False
+				elif event.type == self.stopwatchEvent and event.type != pg.KEYDOWN:
+					action='None'
+					newStopwatch=currentStopwatch+self.stopwatchUnit
+					playerNextPosition =playerPosition
+					pause=False
+				elif event.type == pg.KEYDOWN and event.key in self.actionDict.keys() and event.type == self.stopwatchEvent:
+					action = self.actionDict[event.key]
+					playerNextPosition = np.add(playerPosition, action)
+					newStopwatch = currentStopwatch + self.stopwatchUnit
+					pause=False
+				else:
+					action='None'
+					playerNextPosition=playerPosition
+					newStopwatch=currentStopwatch
+					pause=False
+		return playerNextPosition,action,newStopwatch
 
 class ModelController():
 	def __init__(self):
