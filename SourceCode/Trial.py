@@ -2,8 +2,9 @@ import numpy as np
 import pygame as pg
 from pygame import time
 import collections as co
+import pickle
 from Visualization import DrawBackground,DrawNewState,DrawImage
-from Controller import HumanController
+from Controller import HumanController,ModelController
 import UpdateWorld
 
 
@@ -61,7 +62,7 @@ class Trial():
 			oldGrid=None
 		results["firstResponseTime"]=firstResponseTime
 		results["trialTime"]=wholeResponseTime
-		return results,oldGrid,playerGrid,Score,currentStopwatch
+		return results,oldGrid,playerGrid,score,currentStopwatch
 
 
 
@@ -91,12 +92,20 @@ def main():
 	stopwatchEvent = pg.USEREVENT + 1
 	pg.time.set_timer(stopwatchEvent, stopwatchUnit)
 	pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, stopwatchEvent])
+	finishTime=90000
+	currentStopwatch=32888
+	score=0
 	drawBackground = DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
-	humanController=HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState)
-	trial=Trial(humanController,drawNewState,stopwatchEvent)
+	humanController=HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+	policy=pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
+	modelController=ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+	trial=Trial(modelController, drawNewState, stopwatchEvent, finishTime)
 	bean1Grid,bean2Grid,playerGrid=initialWorld(minDistanceBetweenGrids)
-	results=trial(bean1Grid,bean2Grid,playerGrid)
+	bean1Grid=(3,13)
+	bean2Grid=(5,0)
+	playerGrid=(0,8)
+	results=trial(bean1Grid, bean2Grid, playerGrid, score, currentStopwatch)
 
 
 if __name__=="__main__":

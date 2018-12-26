@@ -98,8 +98,8 @@ def main():
         giveExperimentFeedback(i,score)
         if i == numberOfRests-1:
             drawImage(finishImage)
-        else:
-            drawImage(restImage)
+        # else:
+        #     drawImage(restImage)
 
     participantsScore=np.sum(np.array(score))
     print(participantsScore)

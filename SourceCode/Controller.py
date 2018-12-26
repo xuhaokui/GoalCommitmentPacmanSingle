@@ -76,6 +76,8 @@ class ModelController():
 			actionMaxList = [action for action in policyForCurrentStateDict.keys() if policyForCurrentStateDict[action]==np.max(list(policyForCurrentStateDict.values()))]
 			action = random.choice(actionMaxList)
 			playerNextPosition=np.add(playerPosition,action)
+			if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
+				playerNextPosition=playerPosition
 			pause=False
 			for event in pg.event.get():
 				if event.type == self.stopwatchEvent:
