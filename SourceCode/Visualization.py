@@ -44,7 +44,7 @@ class DrawBackground():
 			pg.draw.line(self.screen, self.lineColor, [np.int(self.leaveEdgeSpace*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)],
 				[np.int((self.gridSize+self.leaveEdgeSpace)*self.widthLineStepSpace),np.int((i+self.leaveEdgeSpace)*self.heightLineStepSpace)], self.lineWidth)
 		seconds=currentTime/1000
-		drawText(self.screen, 'Time: '+str("%4.2f" %seconds)+'s', self.textColorTuple, (self.widthLineStepSpace*2,self.leaveEdgeSpace*10))
+		drawText(self.screen, 'Time: '+str("%4.1f" %seconds)+'s', self.textColorTuple, (self.widthLineStepSpace*2,self.leaveEdgeSpace*10))
 		drawText(self.screen, 'Score: '+str(currentScore), self.textColorTuple, (self.widthLineStepSpace*13,self.leaveEdgeSpace*10))
 		return
 
@@ -67,7 +67,7 @@ class DrawNewState():
 			np.int((targetPositionB[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
 		pg.draw.circle(self.screen, self.playerColor, [np.int((playerPosition[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
 			np.int((playerPosition[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)],self.playerRadius)
-		pg.display.flip()
+		# pg.display.flip()
 		return
 
 class DrawImage():

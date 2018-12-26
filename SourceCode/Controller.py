@@ -15,6 +15,7 @@ class HumanController():
 	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentScore,currentStopwatch):
 		pause=True
 		playerNextPosition=playerPosition.copy()
+		newStopwatch = currentStopwatch
 		remainningTime=max(0,self.finishTime-currentStopwatch)
 		self.drawNewState(targetPositionA,targetPositionB,playerPosition,remainningTime,currentScore)
 		while pause:
@@ -25,28 +26,31 @@ class HumanController():
 						and event.type!=self.stopwatchEvent:
 					action = self.actionDict[event.key]
 					playerNextPosition = np.add(playerPosition,action)
-					newStopwatch = currentStopwatch
+					# newStopwatch = currentStopwatch
 					pause=False
 				elif event.type == pg.QUIT:
 					action=pg.QUIT
 					playerNextPosition = playerPosition.copy()
-					newStopwatch = currentStopwatch
+					# newStopwatch = currentStopwatch
 					pause=False
-				elif event.type == self.stopwatchEvent and event.type != pg.KEYDOWN:
+				elif event.type == self.stopwatchEvent:
 					action='None'
-					newStopwatch=currentStopwatch+self.stopwatchUnit
+					newStopwatch=newStopwatch+self.stopwatchUnit
 					playerNextPosition =playerPosition
-					pause=False
-				elif event.type == pg.KEYDOWN and event.key in self.actionDict.keys() and event.type == self.stopwatchEvent:
-					action = self.actionDict[event.key]
-					playerNextPosition = np.add(playerPosition, action)
-					newStopwatch = currentStopwatch + self.stopwatchUnit
-					pause=False
-				else:
-					action='None'
-					playerNextPosition=playerPosition
-					newStopwatch=currentStopwatch
-					pause=False
+					# pause=False
+				# elif event.type == pg.KEYDOWN and event.key in self.actionDict.keys() and event.type == self.stopwatchEvent:
+				# 	action = self.actionDict[event.key]
+				# 	playerNextPosition = np.add(playerPosition, action)
+				# 	newStopwatch = currentStopwatch + self.stopwatchUnit
+				# 	pause=False
+				# else:
+				# 	action='None'
+				# 	playerNextPosition=playerPosition
+				# 	newStopwatch=currentStopwatch
+				# 	pause=False
+			remainningTime=max(0,self.finishTime - newStopwatch)
+			self.drawNewState(targetPositionA,targetPositionB,playerNextPosition,remainningTime,currentScore)
+			pg.display.flip()
 		return playerNextPosition,action,newStopwatch
 
 class ModelController():
