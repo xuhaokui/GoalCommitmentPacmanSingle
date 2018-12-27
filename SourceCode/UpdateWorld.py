@@ -100,7 +100,7 @@ class UpdateWorld():
             sampleProbability = 1 / np.array(counterCorrection)
             normalizeSampleProbability = sampleProbability / np.sum(sampleProbability)
             nextCondition = np.random.choice(condition, 1, p=list(normalizeSampleProbability))[0]
-            distance = np.linalg.norm(oldTargetGrid - playerGrid, ord=1) + nextCondition
+            distance = np.linalg.norm(np.array(oldTargetGrid) - np.array(playerGrid), ord=1) + nextCondition
             validTarget1GridX, validTarget1GridY = generateRandomAreaOutsideAGrid(playerGrid, self.bounds,
                                                                                   distance, [tuple(oldTargetGrid),tuple(playerGrid)])
             if validTarget1GridX.size != 0 and distance!=0 :
@@ -124,16 +124,18 @@ class UpdateWorld():
 
 
 def main():
-    dimension=3
+    dimension=4
     bounds=[0,0,dimension-1,dimension-1]
     minDistanceBetweenGrids=1
     condition=[-5,-3,-1,0,1,3,5]
     counter=[0]*len(condition)
     action=[0,1]
     initialWorld=InitialWorld(bounds)
-    bean1Grid, bean2Grid, humanGrid=initialWorld(minDistanceBetweenGrids)
-    updateWorld=UpdateWorld(bounds,condition,counter,minDistanceBetweenGrids)
-    nextGrid=updateWorld(bean1Grid,humanGrid,action)
+    bean1Grid=[0,3]
+    bean2Grid=[3,2]
+    humanGrid=[2,1]
+    updateWorld=UpdateWorld(bounds,condition,counter)
+    nextGrid=updateWorld(bean1Grid,humanGrid)
 
 if __name__=="__main__":
     main()

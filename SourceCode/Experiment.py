@@ -50,8 +50,8 @@ def main():
     initialWorld = UpdateWorld.InitialWorld(bounds)
     updateWorld = UpdateWorld.UpdateWorld(bounds, condition, counter)
     pg.init()
-    screenWidth = 720
-    screenHeight = 720
+    screenWidth = 680
+    screenHeight = 680
     screen = pg.display.set_mode((screenWidth, screenHeight))
     leaveEdgeSpace = 2
     lineWidth = 1
@@ -63,7 +63,7 @@ def main():
     playerRadius = 10
     stopwatchUnit = 100
     finishTime=1000*90
-    numberOfRests=4
+    block=4
     textColorTuple = (255, 50, 50)
     stopwatchEvent = pg.USEREVENT + 1
     pg.time.set_timer(stopwatchEvent, stopwatchUnit)
@@ -85,18 +85,18 @@ def main():
     drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
     drawImage = DrawImage(screen)
     humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState,finishTime)
-    policy = pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
-    modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
-    trial = Trial(modelController, drawNewState, stopwatchEvent,finishTime)
+    # policy = pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
+    # modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+    trial = Trial(humanController, drawNewState, stopwatchEvent,finishTime)
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
                              minDistanceBetweenGrids)
     giveExperimentFeedback=GiveExperimentFeedback(screen,textColorTuple,screenWidth,screenHeight)
     drawImage(introductionImage)
-    score=[0]*numberOfRests
-    for i in range(numberOfRests):
+    score=[0]*block
+    for i in range(block):
         score[i] = experiment(finishTime)
         giveExperimentFeedback(i,score)
-        if i == numberOfRests-1:
+        if i == block-1:
             drawImage(finishImage)
         else:
             drawImage(restImage)
