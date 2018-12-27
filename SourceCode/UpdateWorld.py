@@ -131,7 +131,9 @@ def main():
     counter=[0]*len(condition)
     action=[0,1]
     initialWorld=InitialWorld(bounds)
-    bean1Grid, bean2Grid, humanGrid=initialWorld(minDistanceBetweenGrids)
+    bean1Grid=[0,3]
+    bean2Grid=[3,2]
+    humanGrid=[2,1]
     updateWorld=UpdateWorld(bounds,condition,counter)
     nextGrid=updateWorld(bean1Grid,humanGrid)
 
