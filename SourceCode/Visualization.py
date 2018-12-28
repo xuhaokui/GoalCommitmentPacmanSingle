@@ -67,6 +67,9 @@ class DrawNewState():
 			np.int((targetPositionB[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)], self.targetRadius)
 		pg.draw.circle(self.screen, self.playerColor, [np.int((playerPosition[0]+self.leaveEdgeSpace+0.5)*self.widthLineStepSpace),
 			np.int((playerPosition[1]+self.leaveEdgeSpace+0.5)*self.heightLineStepSpace)],self.playerRadius)
+		# pg.draw.circle(self.screen, self.playerColor,
+		# 			   [np.int(playerPosition[0] ),
+		# 				np.int(playerPosition[1])],self.playerRadius)
 		# pg.display.flip()
 		return
 
