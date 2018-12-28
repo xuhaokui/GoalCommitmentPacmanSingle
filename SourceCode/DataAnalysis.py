@@ -1,11 +1,9 @@
-
-import numpy as np 
-import pandas as pd 
-import matplotlib.pyplot as plt 
-import os 
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
 
 def createAllCertainFormatFileList(filePath,fileFormat):
-	filenameList=[os.path.join(filePath,relativeFilename) for relativeFilename in os.listdir(filePath) 
+	filenameList=[os.path.join(filePath,relativeFilename) for relativeFilename in os.listdir(filePath)
 		if os.path.isfile(os.path.join(filePath,relativeFilename))
 		if os.path.splitext(relativeFilename)[1] in fileFormat]
 	return filenameList
@@ -35,7 +33,3 @@ if __name__=="__main__":
 	ax.set_xlabel('Distance(new - old)',fontweight='bold')
 	ax.set_ylabel('Percentage of Eat Old',fontweight='bold')
 	plt.show()
-
-
-
-
