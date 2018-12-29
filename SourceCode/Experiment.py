@@ -68,7 +68,7 @@ def main():
     stopwatchEvent = pg.USEREVENT + 1
     pg.time.set_timer(stopwatchEvent, stopwatchUnit)
     pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, stopwatchEvent])
-    pg.key.set_repeat(1000,120)
+    pg.key.set_repeat(120,120)
     picturePath = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/Pictures/'
     resultsPath = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/Results/'
     experimentValues = co.OrderedDict()
