@@ -28,9 +28,13 @@ if __name__=="__main__":
 	trialNumberTotalEatDataFrame = resultsDataFrame.groupby(['name','condition','participantsType']).count()['beanEaten']
 	mergeConditionDataFrame = pd.DataFrame(trialNumberEatNewDataFrame.values/trialNumberTotalEatDataFrame.values,index=trialNumberTotalEatDataFrame.index,columns=['eatNewPercentage'])
 	mergeConditionDataFrame['eatOldPercentage']=1 - mergeConditionDataFrame['eatNewPercentage']
-	mergeParticipantsDataFrame = mergeConditionDataFrame.groupby(['condition','participantsType']).mean()
-	drawEatOldDataFrame=mergeParticipantsDataFrame['eatOldPercentage'].unstack('participantsType')
-	ax=drawEatOldDataFrame.plot.bar(color=['lightsalmon', 'lightseagreen'],ylim=[0.0,1.1],width=0.8)
+	mergeParticipantsDataFrameMean = mergeConditionDataFrame.groupby(['condition','participantsType']).mean()
+	mergeParticipantsDataFrameStandardError = mergeConditionDataFrame.groupby(['condition', 'participantsType']).std()
+	mergeConditionDataFrame.groupby(['condition', 'participantsType'])
+	fig, ax = plt.subplots()
+	drawEatOldDataFrameMean=mergeParticipantsDataFrameMean['eatOldPercentage'].unstack('participantsType')
+	drawEatOldDataFrameError=mergeParticipantsDataFrameStandardError['eatOldPercentage'].unstack('participantsType')
+	ax=drawEatOldDataFrameMean.plot.bar(yerr=drawEatOldDataFrameError,color=['lightsalmon', 'lightseagreen'],ylim=[0.0,1.1],width=0.8)
 	pl.xticks(rotation=0)
 	ax.set_xlabel('Distance(new - old)',fontweight='bold')
 	ax.set_ylabel('Percentage of Eat Old',fontweight='bold')
