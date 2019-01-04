@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="c70c2ebd-2e9f-4d39-84e4-d5bf3661f619" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SourceCode/DataAnalysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/SourceCode/DataAnalysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pictures/Thumbs.db" beforeDir="false" afterPath="$PROJECT_DIR$/Pictures/Thumbs.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pictures/introduction.png" beforeDir="false" afterPath="$PROJECT_DIR$/Pictures/introduction.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pictures/introduction.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Pictures/introduction.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SourceCode/Experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/SourceCode/Experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SourceCode/Experiment_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/SourceCode/Experiment_test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,6 +17,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/GoalCommitmentPacmanSingle$DataAnalysis.coverage" NAME="DataAnalysis Coverage Results" MODIFIED="1546411210602" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SourceCode" />
+    <SUITE FILE_PATH="coverage/GoalCommitmentPacmanSingle$Experiment_test.coverage" NAME="Experiment_test Coverage Results" MODIFIED="1546587746577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SourceCode" />
     <SUITE FILE_PATH="coverage/GoalCommitmentPacmanSingle$Experiment.coverage" NAME="Experiment Coverage Results" MODIFIED="1546086513224" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SourceCode" />
   </component>
   <component name="FUSProjectUsageTrigger">
@@ -21,28 +26,29 @@
         <counts>
           <entry key="project.closed" value="2" />
           <entry key="project.open.time.34" value="1" />
+          <entry key="project.open.time.36" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="2" />
+          <entry key="py" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="2" />
+          <entry key="Python" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="151" />
+          <entry key="py" value="158" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="151" />
+          <entry key="Python" value="158" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -54,13 +60,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SourceCode/DataAnalysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
+            <state relative-caret-position="522">
               <caret line="39" column="52" selection-start-line="39" selection-start-column="42" selection-end-line="39" selection-end-column="52" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SourceCode/Experiment.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret line="46" column="18" selection-start-line="46" selection-start-column="18" selection-end-line="46" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/SourceCode/Experiment_test.py">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -76,8 +99,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/SourceCode/Experiment.py" />
         <option value="$PROJECT_DIR$/SourceCode/DataAnalysis.py" />
+        <option value="$PROJECT_DIR$/SourceCode/Experiment.py" />
       </list>
     </option>
   </component>
@@ -97,10 +120,7 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane" />
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -121,7 +141,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.DataAnalysis">
+  <component name="RunManager" selected="Python.Experiment_test">
     <configuration name="DataAnalysis" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="GoalCommitmentPacmanSingle" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -166,12 +186,36 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Experiment_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="GoalCommitmentPacmanSingle" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SourceCode" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SourceCode/Experiment_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.Experiment" />
       <item itemvalue="Python.DataAnalysis" />
+      <item itemvalue="Python.Experiment_test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Experiment_test" />
         <item itemvalue="Python.DataAnalysis" />
         <item itemvalue="Python.Experiment" />
       </list>
@@ -191,14 +235,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.41358024" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32840723" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32840723" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -223,20 +267,34 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/SourceCode/DataAnalysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="39" column="52" selection-start-line="39" selection-start-column="42" selection-end-line="39" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/SourceCode/Experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-87">
-          <caret line="70" column="19" selection-start-line="70" selection-start-column="19" selection-end-line="70" selection-end-column="19" />
+        <state>
+          <caret line="46" column="18" selection-start-line="46" selection-start-column="18" selection-end-line="46" selection-end-column="18" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SourceCode/DataAnalysis.py">
+    <entry file="file://$PROJECT_DIR$/SourceCode/Experiment - test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="39" column="52" selection-start-line="39" selection-start-column="42" selection-end-line="39" selection-end-column="52" />
+        <state>
+          <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SourceCode/Experiment_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="65" column="11" selection-start-line="65" selection-start-column="11" selection-end-line="65" selection-end-column="11" />
         </state>
       </provider>
     </entry>

@@ -62,8 +62,8 @@ def main():
     targetRadius = 10
     playerRadius = 10
     stopwatchUnit = 100
-    finishTime=1000*90
-    block=4
+    finishTime=1000*120
+    block=6
     textColorTuple = (255, 50, 50)
     stopwatchEvent = pg.USEREVENT + 1
     pg.time.set_timer(stopwatchEvent, stopwatchUnit)

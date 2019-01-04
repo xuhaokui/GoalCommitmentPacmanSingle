@@ -68,6 +68,7 @@ def main():
     stopwatchEvent = pg.USEREVENT + 1
     pg.time.set_timer(stopwatchEvent, stopwatchUnit)
     pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, stopwatchEvent])
+    pg.key.set_repeat(120,120)
     picturePath = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/Pictures/'
     resultsPath = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/Results/'
     experimentValues = co.OrderedDict()
@@ -85,6 +86,8 @@ def main():
     drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
     drawImage = DrawImage(screen)
     humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState,finishTime)
+    # policy = pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
+    # modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
     trial = Trial(humanController, drawNewState, stopwatchEvent,finishTime)
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
                              minDistanceBetweenGrids)
