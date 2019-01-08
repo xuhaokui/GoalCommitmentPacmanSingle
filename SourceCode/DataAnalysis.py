@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import pylab as pl
+import numpy as np
 
 def createAllCertainFormatFileList(filePath,fileFormat):
 	filenameList=[os.path.join(filePath,relativeFilename) for relativeFilename in os.listdir(filePath)
@@ -31,11 +32,16 @@ if __name__=="__main__":
 	mergeParticipantsDataFrameMean = mergeConditionDataFrame.groupby(['condition','participantsType']).mean()
 	mergeParticipantsDataFrameStandardError = mergeConditionDataFrame.groupby(['condition', 'participantsType']).std()
 	mergeConditionDataFrame.groupby(['condition', 'participantsType'])
-	fig, ax = plt.subplots()
 	drawEatOldDataFrameMean=mergeParticipantsDataFrameMean['eatOldPercentage'].unstack('participantsType')
+	orderedCondition=['-5','-3','-1','0','1','3','5']
+	drawEatOldDataFrameMean['orderedCondition']=drawEatOldDataFrameMean.index
+	drawEatOldDataFrameMean['orderedCondition']=drawEatOldDataFrameMean['orderedCondition'].astype('category')
+	drawEatOldDataFrameMean['orderedCondition'].cat.reorder_categories(orderedCondition,inplace=True)
+	drawEatOldDataFrameMean.sort_values('orderedCondition',inplace=True)
 	drawEatOldDataFrameError=mergeParticipantsDataFrameStandardError['eatOldPercentage'].unstack('participantsType')
 	ax=drawEatOldDataFrameMean.plot.bar(yerr=drawEatOldDataFrameError,color=['lightsalmon', 'lightseagreen'],ylim=[0.0,1.1],width=0.8)
 	pl.xticks(rotation=0)
+	plt.yticks(np.arange(0, 1.1, 0.1))
 	ax.set_xlabel('Distance(new - old)',fontweight='bold')
 	ax.set_ylabel('Percentage of Eat Old',fontweight='bold')
 	plt.show()
