@@ -1,0 +1,5 @@
+,sum_sq,df,F,PR(>F)
+participantsType,1.39303004,1,283.7598378,2.83E-41
+condition,16.56060063,6,562.2316356,3.17E-129
+participantsType*condition,4.376505515,6,148.5821625,5.58E-74
+Residual,1.065293528,217,,

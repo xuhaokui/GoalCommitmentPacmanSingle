@@ -50,8 +50,8 @@ def main():
     initialWorld = UpdateWorld.InitialWorld(bounds)
     updateWorld = UpdateWorld.UpdateWorld(bounds, condition, counter)
     pg.init()
-    screenWidth = 680
-    screenHeight = 680
+    screenWidth = 600
+    screenHeight = 600
     screen = pg.display.set_mode((screenWidth, screenHeight))
     leaveEdgeSpace = 2
     lineWidth = 1
@@ -86,9 +86,9 @@ def main():
     drawNewState = DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
     drawImage = DrawImage(screen)
     humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState,finishTime)
-    policy = pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
-    modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
-    trial = Trial(modelController, drawNewState, stopwatchEvent,finishTime)
+    # policy = pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
+    # modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+    trial = Trial(humanController, drawNewState, stopwatchEvent,finishTime)
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
                              minDistanceBetweenGrids)
     giveExperimentFeedback=GiveExperimentFeedback(screen,textColorTuple,screenWidth,screenHeight)
