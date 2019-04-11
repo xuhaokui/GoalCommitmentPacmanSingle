@@ -41,8 +41,12 @@ class HumanController():
 			pg.display.update()
 		return playerPosition,action,newStopwatch
 
+def calculateSoftmaxProbability(probabilityList,beita):
+	newProbabilityList=list(np.divide(np.exp(np.multiply(beita,probabilityList)),np.sum(np.exp(np.multiply(beita,probabilityList)))))
+	return newProbabilityList
+
 class ModelController():
-	def __init__(self,policy,gridSize,stopwatchEvent,stopwatchUnit,drawNewState,finishTime):
+	def __init__(self,policy,gridSize,stopwatchEvent,stopwatchUnit,drawNewState,finishTime,softmaxBeita):
 		self.policy=policy
 		self.gridSize=gridSize
 		self.stopwatchEvent=stopwatchEvent
@@ -50,6 +54,7 @@ class ModelController():
 		self.stopwatch=0
 		self.drawNewState=drawNewState
 		self.finishTime=finishTime
+		self.softmaxBeita=softmaxBeita
 	def __call__(self,targetPositionA,targetPositionB,playerPosition,currentScore,currentStopwatch):
 		pause=True
 		newStopwatch = currentStopwatch
@@ -60,8 +65,13 @@ class ModelController():
 			if targetStates not in self.policy.keys():
 				targetStates = (tuple(targetPositionB),tuple(targetPositionA))
 			policyForCurrentStateDict=self.policy[targetStates][tuple(playerPosition)]
-			actionMaxList = [action for action in policyForCurrentStateDict.keys() if policyForCurrentStateDict[action]==np.max(list(policyForCurrentStateDict.values()))]
-			action = random.choice(actionMaxList)
+			if self.softmaxBeita<0:
+				actionMaxList = [action for action in policyForCurrentStateDict.keys() if policyForCurrentStateDict[action]==np.max(list(policyForCurrentStateDict.values()))]
+				action = random.choice(actionMaxList)
+			else:
+				actionProbability = np.divide(list(policyForCurrentStateDict.values()),np.sum(list(policyForCurrentStateDict.values())))
+				softmaxProbabilityList=calculateSoftmaxProbability(list(actionProbability), self.softmaxBeita)
+				action = list(policyForCurrentStateDict.keys())[list(np.random.multinomial(1,softmaxProbabilityList)).index(1)]
 			playerNextPosition=np.add(playerPosition,action)
 			if np.any(playerNextPosition<0) or np.any(playerNextPosition>=self.gridSize):
 				playerNextPosition=playerPosition
@@ -98,14 +108,17 @@ if __name__=="__main__":
 	pg.time.set_timer(stopwatchEvent, stopwatchUnit)
 	finishTime=90000
 	currentStopwatch=32000
+	softmaxBeita=20
 
 	drawBackground=Visualization.DrawBackground(screen, gridSize, leaveEdgeSpace, backgroundColor, lineColor, lineWidth, textColorTuple)
 	drawNewState=Visualization.DrawNewState(screen, drawBackground, targetColor, playerColor, targetRadius, playerRadius)
 
 	getHumanAction = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+	# newProbabilityList=calculateSoftmaxProbability([0.5,0.3,0.2],20)
+	# print(newProbabilityList)
 	import pickle
 	policy=pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
-	getModelAction = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+	getModelAction = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime, softmaxBeita)
 
 	# [playerNextPosition,action,newStopwatch]=getHumanAction(targetPositionA, targetPositionB, playerPosition, currentScore, currentStopwatch)
 	[playerNextPosition,action,newStopwatch]=getModelAction(targetPositionA, targetPositionB, playerPosition, currentScore, currentStopwatch)

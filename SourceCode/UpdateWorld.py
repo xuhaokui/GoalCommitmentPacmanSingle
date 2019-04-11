@@ -136,6 +136,7 @@ def main():
     humanGrid=[2,1]
     updateWorld=UpdateWorld(bounds,condition,counter)
     nextGrid=updateWorld(bean1Grid,humanGrid)
+    print(nextGrid)
 
 if __name__=="__main__":
     main()

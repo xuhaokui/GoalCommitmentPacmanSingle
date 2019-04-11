@@ -42,8 +42,8 @@ class Experiment():
 
 
 def main():
-    gridSize = 15
-    bounds = [1, 1, gridSize - 2,gridSize - 2]
+    gridSize = 16
+    bounds = [0, 0, gridSize - 1,gridSize - 1]
     minDistanceBetweenGrids = 5
     condition = [-5, -3, -1, 0, 1, 3, 5]
     counter = [0] * len(condition)
@@ -63,7 +63,8 @@ def main():
     playerRadius = 10
     stopwatchUnit = 100
     finishTime=1000*90
-    block=4
+    block=1
+    softmaxBeita=-1
     textColorTuple = (255, 50, 50)
     stopwatchEvent = pg.USEREVENT + 1
     pg.time.set_timer(stopwatchEvent, stopwatchUnit)
@@ -87,7 +88,7 @@ def main():
     drawImage = DrawImage(screen)
     humanController = HumanController(gridSize, stopwatchEvent, stopwatchUnit, drawNewState,finishTime)
     policy = pickle.load(open("SingleWolfTwoSheepsGrid15.pkl","rb"))
-    modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime)
+    modelController = ModelController(policy, gridSize, stopwatchEvent, stopwatchUnit, drawNewState, finishTime, softmaxBeita)
     trial = Trial(modelController, drawNewState, stopwatchEvent,finishTime)
     experiment = Experiment(trial, writer, experimentValues, initialWorld, updateWorld, drawImage, resultsPath,
                              minDistanceBetweenGrids)
